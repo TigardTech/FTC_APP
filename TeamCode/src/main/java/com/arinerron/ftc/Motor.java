@@ -4,19 +4,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Motor {
-    private String name = "";
     private Robot robot = null;
     private DcMotor motor = null;
     private ElapsedTime timer = new ElapsedTime();
 
-    public Motor(Robot robot, String name) {
-        this.name = name;
+    public Motor(Robot robot, DcMotor motor) {
         this.robot = robot;
-        this.motor = this.getRobot().dcMotor.get(this.getName());
-    }
-
-    public String getName() {
-        return this.name;
+        this.motor = motor;
     }
 
     public Robot getRobot() {
@@ -28,6 +22,7 @@ public class Motor {
     }
 
     private void wait(double seconds) {
-        
+        timer.reset();
+        while(timer.seconds() < seconds);
     }
 }

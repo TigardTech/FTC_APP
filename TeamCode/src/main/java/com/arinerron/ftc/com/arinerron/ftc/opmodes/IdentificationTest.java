@@ -26,8 +26,9 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.arinerron.ftc;
+package com.arinerron.ftc.com.arinerron.ftc.opmodes;
 
+import com.arinerron.ftc.Constants;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -85,7 +86,7 @@ public class IdentificationTest extends LinearOpMode {
                  * If there is an object visible, it will return something other than UNKNOWN
                  */
 
-                
+
 
                 /*OpenGLMatrix pose = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getPose();
                 telemetry.addData("Pose", format(pose));

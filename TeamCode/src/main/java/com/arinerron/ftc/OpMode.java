@@ -1,23 +1,38 @@
 package com.arinerron.ftc;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Disabled
-public abstract class OpMode extends LinearOpMode {
+public abstract class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode {
     public static String TAG = "OpMode";
 
     private HardwareMap map = null;
     private String name = "OpMode";
     private Robot robot = null;
+    private ElapsedTime timer = new ElapsedTime();
 
     public OpMode() {
         this.map = hardwareMap;
 
         this.robot = new Robot(this);
+    }
+
+    public void startTimer(double secs) {
+        timer.reset();
+    }
+
+    public double getTimer() {
+        return timer.seconds();
+    }
+
+    public boolean isTimerDone(double secs) {
+        return this.getTimer() >= secs;
     }
 
     public void setName(String name) {
@@ -29,10 +44,24 @@ public abstract class OpMode extends LinearOpMode {
     }
 
     public abstract void run();
+    public abstract void repeat();
 
     @Override
-    public void runOpMode() throws InterruptedException {
-        this.run();
+    public void init() {}
+
+    @Override
+    public void loop() {
+        this.repeat(); // DO NOT block!
+    }
+
+    @Override
+    public void stop() {}
+
+    @Override
+    public void start() {
+        new Thread(new Runnable() { public void run() {
+            OpMode.this.run();
+        }}).start();
     }
 
     public HardwareMap getHardwareMap() {
@@ -58,5 +87,13 @@ public abstract class OpMode extends LinearOpMode {
 
     public Servo getServo(String name) {
         return this.getHardwareMap().servo.get(name);
+    }
+
+    public ColorSensor getColorSensor(String name) {
+        return this.getHardwareMap().colorSensor.get(name);
+    }
+
+    public GyroSensor getGyroSensor(String name) {
+        return this.getHardwareMap().gyroSensor.get(name);
     }
 }

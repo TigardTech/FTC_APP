@@ -7,30 +7,55 @@ public class Robot {
     private ElapsedTime timer = new ElapsedTime(); // strictly for the wait function!
 
     private Motor left = null, middle = null, right = null;
+    private ColorSensor sensorColor = null;
+    private GyroSensor sensorGyro = null;
     private OpMode mode = null;
 
     /* robot constructor, initialize stuff */
     public Robot(OpMode mode) {
         this.mode = mode;
 
+        // create motor instances
         this.left = new Motor(this, this.getOpMode().getMotor(Constants.LEFT_MOTOR));
         this.middle = new Motor(this, this.getOpMode().getMotor(Constants.ROTATING_MOTOR));
         this.right = new Motor(this, this.getOpMode().getMotor(Constants.RIGHT_MOTOR));
 
+        // enable/disable encoders on motors
         this.getLeftMotor().setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
         this.getMiddleMotor().setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
         this.getRightMotor().setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        // define sensors
+        if(Constants.COLOR_SENSOR != null && Constants.COLOR_SENSOR.length() != 0)
+            this.sensorColor = this.getOpMode().getColorSensor(Constants.COLOR_SENSOR);
+        if(Constants.GYRO_SENSOR != null && Constants.GYRO_SENSOR.length() != 0)
+            this.sensorColor = this.getOpMode().getColorSensor(Constants.GYRO_SENSOR);
+
+        // calibrate sensors
+        this.getGyroSensor().calibrate();
     }
 
     /* drive for x seconds at x speed */
     public void drive(double speed, double time) {
-        this.getLeftMotor().setPower(speed);
-        this.getRightMotor().setPower(speed);
+        setPower(speed);
 
         this.wait(time);
 
         this.getLeftMotor().reset();
         this.getRightMotor().reset();
+    }
+
+    /* reset all motors */
+    public void reset() {
+        this.getLeftMotor().reset();
+        this.getMiddleMotor().reset();
+        this.getRightMotor().reset();
+    }
+
+    /* set power on all motors */
+    public void setPower(double speed) {
+        this.getLeftMotor().setPower(speed);
+        this.getRightMotor().setPower(speed);
     }
 
     /* get left motor */
@@ -56,6 +81,16 @@ public class Robot {
     /* get Opmode */
     public OpMode getOpMode() {
         return this.mode;
+    }
+
+    /* get color sensor */
+    public ColorSensor getColorSensor() {
+        return this.sensorColor;
+    }
+
+    /* get gyro sensor */
+    public GyroSensor getGyroSensor() {
+        return this.sensorGyro;
     }
 
     /* wait x seconds */

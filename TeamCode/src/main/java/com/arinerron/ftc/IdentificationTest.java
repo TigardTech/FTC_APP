@@ -26,7 +26,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package com.arinerron.ftc;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -46,28 +46,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-/**
- * This OpMode illustrates the basics of using the Vuforia engine to determine
- * the identity of Vuforia VuMarks encountered on the field. The code is structured as
- * a LinearOpMode. It shares much structure with {@link ConceptVuforiaNavigation}; we do not here
- * duplicate the core Vuforia documentation found there, but rather instead focus on the
- * differences between the use of Vuforia for navigation vs VuMark identification.
- *
- * @see ConceptVuforiaNavigation
- * @see VuforiaLocalizer
- * @see VuforiaTrackableDefaultListener
- * see  ftc_app/doc/tutorial/FTC_FieldCoordinateSystemDefinition.pdf
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list.
- *
- * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
- * is explained in {@link ConceptVuforiaNavigation}.
- */
-
 @Autonomous(name="Identification", group ="Concept")
 @Disabled
-public class ConceptVuMarkIdentification extends LinearOpMode {
+public class IdentificationTest extends LinearOpMode {
 
     public static final String TAG = "Identification";
 
@@ -75,11 +56,12 @@ public class ConceptVuMarkIdentification extends LinearOpMode {
 
     VuforiaLocalizer vuforia;
 
-    @Override public void runOpMode() {
+    @Override
+    public void runOpMode() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
-        parameters.vuforiaLicenseKey = "ATsODcD/////AAAAAVw2lR...d45oGpdljdOh5LuFB9nDNfckoxb8COxKSFX";
+        parameters.vuforiaLicenseKey = Constants.LICENSE_KEY;
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK; // VuforiaLocalizer.CameraDirection.FRONT for front camera. Back has a greater range.
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
@@ -100,10 +82,10 @@ public class ConceptVuMarkIdentification extends LinearOpMode {
 
                 /*
                  * RelicRecoveryVuMark vuMark is an enum with the values UNKNOWN, LEFT, CENTER, and RIGHT.
-                 * If there is an object viisble, it will return something other than UNKNOWN
+                 * If there is an object visible, it will return something other than UNKNOWN
                  */
 
-
+                
 
                 /*OpenGLMatrix pose = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getPose();
                 telemetry.addData("Pose", format(pose));
@@ -127,6 +109,8 @@ public class ConceptVuMarkIdentification extends LinearOpMode {
 
             telemetry.update();
         }
+
+        relicTrackables.deactivate();
     }
 
     String format(OpenGLMatrix transformationMatrix) {

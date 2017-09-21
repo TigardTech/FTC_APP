@@ -7,12 +7,30 @@ public class Robot {
     private ElapsedTime timer = new ElapsedTime(); // strictly for the wait function!
 
     private Motor left = null, middle = null, right = null;
+    private OpMode mode = null;
 
-    /* Robot constructor, initialize stuff */
-    public Robot(DcMotor middle, DcMotor left, DcMotor right) {
-        this.left = new Motor(this, left);
-        this.middle = new Motor(this, middle);
-        this.right = new Motor(this, right);
+    /* robot constructor, initialize stuff */
+    public Robot(OpMode mode) {
+        this.mode = mode;
+
+        this.left = new Motor(this, this.getOpMode().getMotor(Constants.LEFT_MOTOR));
+        this.middle = new Motor(this, this.getOpMode().getMotor(Constants.ROTATING_MOTOR));
+        this.right = new Motor(this, this.getOpMode().getMotor(Constants.RIGHT_MOTOR));
+
+        this.getLeftMotor().setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.getMiddleMotor().setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.getRightMotor().setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    /* drive for x seconds at x speed */
+    public void drive(double speed, double time) {
+        this.getLeftMotor().setPower(speed);
+        this.getRightMotor().setPower(speed);
+
+        this.wait(time);
+
+        this.getLeftMotor().reset();
+        this.getRightMotor().reset();
     }
 
     /* get left motor */
@@ -33,6 +51,11 @@ public class Robot {
     /* easter egg */
     public Motor getPoliticallyNeutralMotor() {
         return this.middle;
+    }
+
+    /* get Opmode */
+    public OpMode getOpMode() {
+        return this.mode;
     }
 
     /* wait x seconds */

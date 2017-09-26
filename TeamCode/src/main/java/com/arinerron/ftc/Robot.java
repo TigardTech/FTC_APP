@@ -29,10 +29,11 @@ public class Robot {
         if(Constants.COLOR_SENSOR != null && Constants.COLOR_SENSOR.length() != 0)
             this.sensorColor = this.getOpMode().getColorSensor(Constants.COLOR_SENSOR);
         if(Constants.GYRO_SENSOR != null && Constants.GYRO_SENSOR.length() != 0)
-            this.sensorColor = this.getOpMode().getColorSensor(Constants.GYRO_SENSOR);
+            this.sensorGyro = this.getOpMode().getGyroSensor(Constants.GYRO_SENSOR);
 
         // calibrate sensors
-        this.getGyroSensor().calibrate();
+        if(this.getGyroSensor() != null)
+            this.getGyroSensor().calibrate();
     }
 
     /* drive for x seconds at x speed */

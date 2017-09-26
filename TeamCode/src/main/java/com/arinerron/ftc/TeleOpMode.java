@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 @TeleOp(name = "TeleOpMode", group = "Teleop OpMode")
 @Disabled
-public abstract class TeleOpMode extends OpMode {
+public abstract class TeleOpMode extends com.arinerron.ftc.OpMode {
     public abstract void run();
 
     /* returns the first gamepad */

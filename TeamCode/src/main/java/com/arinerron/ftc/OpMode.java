@@ -18,9 +18,6 @@ public abstract class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpM
     private ElapsedTime timer = new ElapsedTime();
 
     public OpMode() {
-        this.map = hardwareMap;
-
-        this.robot = new Robot(this);
     }
 
     public void startTimer(double secs) {
@@ -47,7 +44,10 @@ public abstract class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpM
     public abstract void repeat();
 
     @Override
-    public void init() {}
+    public void init() {
+        this.map = hardwareMap;
+        this.robot = new Robot(this);
+    }
 
     @Override
     public void loop() {
@@ -59,6 +59,7 @@ public abstract class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpM
 
     @Override
     public void start() {
+        this.robot = new Robot(this);
         new Thread(new Runnable() { public void run() {
             OpMode.this.run();
         }}).start();

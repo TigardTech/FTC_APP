@@ -3,12 +3,19 @@ package com.arinerron.ftc.com.arinerron.ftc.opmodes;
 import com.arinerron.ftc.TeleOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "Main TeleOp", group = "TeleOp")
+@TeleOp(name = "Test TeleOp", group = "TeleOp")
 public class MainTeleOpMode extends TeleOpMode {
     public MainTeleOpMode() {
         super();
 
-        write("OpMode initialized.");
+        write("Test OpMode initialized.");
+    }
+
+    @Override
+    public void init() {
+        super.init();
+
+        write("Preparing to run test OpMode...");
     }
 
     @Override
@@ -16,24 +23,24 @@ public class MainTeleOpMode extends TeleOpMode {
         write("OpMode running...");
     }
 
-    boolean test = false;
-    boolean go = false;
+    private boolean left = false, right = false;
 
     @Override
     public void repeat() {
-        write("Running: " + this.getGamepad().a + " and " + this.getRobot().getMiddleMotor().getPower() + "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                `                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                and " + test);
-        if(this.getGamepad().a) {
-            test = false;
-            go = true;
+        if(Double.isNaN(this.getRobot().getMiddleServo().getPosition()))
+            this.getRobot().getMiddleServo().setPosition(0);
+        write("Servo position: " + this.getRobot().getMiddleServo().getPosition() + "    &    center: " + this.getRobot().getMiddleServo().getCenter());
+        if(this.getGamepad().x) {
+            this.left = true;
+        } else if(this.getGamepad().b) {
+            this.right = true;
         } else {
-            if(!test && go) {
-                this.getRobot().getMiddleMotor().setPower(0.11   );
-                this.startTimer(1.0);y  
-                this.test = true;
-                go = false;
-            } else if(isTimerDone(1.0)) {
-                this.test = false;
-                this.getRobot().getMiddleMotor().reset();
+            if(this./*politically*/left && !this.getGamepad().x) {
+                this.left = false;
+                this.getRobot().getMiddleServo().setPosition((double) this.getRobot().getMiddleServo().getPosition() - (double) 0.1);
+            } else if(this.right && !this.getGamepad().b) {
+                this.right = false;
+                this.getRobot().getMiddleServo().setPosition((double) this.getRobot().getMiddleServo().getPosition() + (double) 0.1);
             }
         }
     }

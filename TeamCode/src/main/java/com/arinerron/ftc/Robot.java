@@ -6,7 +6,10 @@ import com.qualcomm.robotcore.util.*;
 public class Robot {
     private ElapsedTime timer = new ElapsedTime(); // strictly for the wait function!
 
-    private Motor left = null, middle = null, right = null;
+    private Motor left = null;
+    private Servo middle = null;
+    private Motor right = null;
+
     private ColorSensor sensorColor = null;
     private GyroSensor sensorGyro = null;
     private OpMode mode = null;
@@ -17,12 +20,11 @@ public class Robot {
 
         // create motor instances
         this.left = new Motor(this, this.getOpMode().getMotor(Constants.LEFT_MOTOR));
-        this.middle = new Motor(this, this.getOpMode().getMotor(Constants.ROTATING_MOTOR));
+        this.middle = new Servo(this, this.getOpMode().getServo(Constants.MIDDLE_SERVO));
         this.right = new Motor(this, this.getOpMode().getMotor(Constants.RIGHT_MOTOR));
 
         // enable/disable encoders on motors
         this.getLeftMotor().setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        this.getMiddleMotor().setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
         this.getRightMotor().setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // define sensors
@@ -49,7 +51,6 @@ public class Robot {
     /* reset all motors */
     public void reset() {
         this.getLeftMotor().reset();
-        this.getMiddleMotor().reset();
         this.getRightMotor().reset();
     }
 
@@ -65,7 +66,7 @@ public class Robot {
     }
 
     /* get middle motor */
-    public Motor getMiddleMotor() {
+    public Servo getMiddleServo() {
         return this.middle;
     }
 
@@ -76,7 +77,7 @@ public class Robot {
 
     /* easter egg */
     public Motor getPoliticallyNeutralMotor() {
-        return this.middle;
+        return this.right;
     }
 
     /* get Opmode */

@@ -29,7 +29,9 @@ public class MainTeleOpMode extends TeleOpMode {
     public void repeat() {
         if(Double.isNaN(this.getRobot().getMiddleServo().getPosition()))
             this.getRobot().getMiddleServo().setPosition(0);
+
         write("Servo position: " + this.getRobot().getMiddleServo().getPosition() + "    &    center: " + this.getRobot().getMiddleServo().getCenter());
+
         if(this.getGamepad().x) {
             this.left = true;
         } else if(this.getGamepad().b) {

@@ -18,6 +18,7 @@ public abstract class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpM
     private ElapsedTime timer = new ElapsedTime();
 
     public OpMode() {
+
     }
 
     public void startTimer(double secs) {
@@ -74,7 +75,8 @@ public abstract class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpM
     }
 
     public void write(String tag, String data) {
-        telemetry.addData(tag.toUpperCase(), data);
+        Log.write(tag, data);
+        telemetry.addData("Log", "\n" + Log.getString());
         telemetry.update();
     }
 

@@ -76,7 +76,7 @@ public abstract class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpM
 
     public void write(String tag, String data) {
         Log.write(tag, data);
-        telemetry.addData("Log", "\n" + Log.getString());
+        telemetry.addData(Constants.ROBOT_NAME, "\n" + Log.getString());
         telemetry.update();
     }
 

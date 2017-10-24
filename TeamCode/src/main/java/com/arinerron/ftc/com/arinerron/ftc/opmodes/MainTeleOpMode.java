@@ -4,7 +4,7 @@ import com.arinerron.ftc.Constants;
 import com.arinerron.ftc.TeleOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "Test TeleOp", group = "TeleOp")
+@TeleOp(name = "ServoTest", group = "TeleOp")
 public class MainTeleOpMode extends TeleOpMode {
     public MainTeleOpMode() {
         super();
@@ -33,10 +33,10 @@ public class MainTeleOpMode extends TeleOpMode {
 
         this.write("debug", "(" + x + ", " + y + "): " + ((double) ((int) ((double) getAngle(x, y) * 100)) / (double) 100) + " degrees");
 
-        if(Double.isNaN(this.getRobot().getMiddleServo().getPosition()))
-            this.getRobot().getMiddleServo().setPosition(0);
+        if(Double.isNaN(this.getRobot().getServo1().getPosition()))
+            this.getRobot().getServo1().setPosition(0);
 
-        // write("Servo position: " + this.getRobot().getMiddleServo().getPosition() + "    &    center: " + this.getRobot().getMiddleServo().getCenter());
+        // write("Servo position: " + this.getRobot().getServo1().getPosition() + "    &    center: " + this.getRobot().getServo1().getCenter());
 
         if(this.getGamepad().x) {
             this.left = true;
@@ -45,10 +45,10 @@ public class MainTeleOpMode extends TeleOpMode {
         } else {
             if(this.left && !this.getGamepad().x) {
                 this.left = false;
-                this.getRobot().getMiddleServo().setPosition((double) this.getRobot().getMiddleServo().getPosition() - (double) 0.1);
+                this.getRobot().getServo1().setPosition((double) this.getRobot().getServo1().getPosition() - (double) 0.1);
             } else if(this.right && !this.getGamepad().b) {
                 this.right = false;
-                this.getRobot().getMiddleServo().setPosition((double) this.getRobot().getMiddleServo().getPosition() + (double) 0.1);
+                this.getRobot().getServo1().setPosition((double) this.getRobot().getServo1().getPosition() + (double) 0.1);
             }
         }
 
@@ -59,14 +59,14 @@ public class MainTeleOpMode extends TeleOpMode {
         } else if(this.getGamepad().right_bumper) {
             this.up = false;
             this.down = false;
-            this.getRobot().getLeftMotor().reset();
+            this.getRobot().getMotor1().reset();
         } else {
             if(this.up && !this.getGamepad().y) {
                 this.up = false;
-                this.getRobot().getLeftMotor().setPower(1.0);
+                this.getRobot().getMotor1().setPower(1.0);
             } else if(this.down && !this.getGamepad().a) {
                 this.down = false;
-                this.getRobot().getLeftMotor().setPower(-1.0);
+                this.getRobot().getMotor1().setPower(-1.0);
             }
         }
     }

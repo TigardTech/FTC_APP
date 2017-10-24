@@ -6,9 +6,16 @@ public class Constants {
     public static final String ROBOT_NAME = "Operation Stripes";
 
     /* define motor names */
-    public static final String MIDDLE_SERVO = "center_servo";
-    public static final String LEFT_MOTOR = "middle_motor";
-    public static final String RIGHT_MOTOR = "middle_motor";
+    public static final String S1_SERVO = "servo1";
+    public static final String S2_SERVO = "servo2";
+    public static final String S3_SERVO = "servo3";
+    public static final String S4_SERVO = "servo4";
+    public static final String SA1_SERVO = "servo_arm1";
+    public static final String SA2_SERVO = "servo_arm2";
+    public static final String M1_MOTOR = "motor1";
+    public static final String M2_MOTOR = "motor2";
+    public static final String M3_MOTOR = "motor3";
+    public static final String M4_MOTOR = "motor4";
 
     /* define sensor names. empty string disables sensor. */
     public static final String COLOR_SENSOR = "";

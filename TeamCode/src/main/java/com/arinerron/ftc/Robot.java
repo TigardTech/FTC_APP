@@ -6,9 +6,19 @@ import com.qualcomm.robotcore.util.*;
 public class Robot {
     private ElapsedTime timer = new ElapsedTime(); // strictly for the wait function!
 
-    private Motor left = null;
-    private Servo middle = null;
-    private Motor right = null;
+    // wheel motors
+    private Motor m1 = null;
+    private Motor m2 = null;
+    private Motor m3 = null;
+    private Motor m4 = null;
+    // wheel servos
+    private Servo s1 = null;
+    private Servo s2 = null;
+    private Servo s3 = null;
+    private Servo s4 = null;
+    // arm servos
+    private Servo sa1 = null;
+    private Servo sa2 = null;
 
     private ColorSensor sensorColor = null;
     private GyroSensor sensorGyro = null;
@@ -18,14 +28,23 @@ public class Robot {
     public Robot(OpMode mode) {
         this.mode = mode;
 
-        // create motor instances
-        this.left = new Motor(this, this.getOpMode().getMotor(Constants.LEFT_MOTOR));
-        this.middle = new Servo(this, this.getOpMode().getServo(Constants.MIDDLE_SERVO));
-        this.right = new Motor(this, this.getOpMode().getMotor(Constants.RIGHT_MOTOR));
+        // create motor&servo instances
+        this.m1 = new Motor(this, this.getOpMode().getMotor(Constants.M1_MOTOR));
+        this.s1 = new Servo(this, this.getOpMode().getServo(Constants.S1_SERVO));
+        this.m2 = new Motor(this, this.getOpMode().getMotor(Constants.M2_MOTOR));
+        this.s2 = new Servo(this, this.getOpMode().getServo(Constants.S2_SERVO));
+        this.m3 = new Motor(this, this.getOpMode().getMotor(Constants.M3_MOTOR));
+        this.s3 = new Servo(this, this.getOpMode().getServo(Constants.S3_SERVO));
+        this.m4 = new Motor(this, this.getOpMode().getMotor(Constants.M4_MOTOR));
+        this.s4 = new Servo(this, this.getOpMode().getServo(Constants.S4_SERVO));
+        this.sa1 = new Servo(this, this.getOpMode().getServo(Constants.SA1_SERVO));
+        this.sa2 = new Servo(this, this.getOpMode().getServo(Constants.SA2_SERVO));
 
         // enable/disable encoders on motors
-        this.getLeftMotor().setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        this.getRightMotor().setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.getMotor1().setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.getMotor2().setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.getMotor3().setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.getMotor4().setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // define sensors
         if(Constants.COLOR_SENSOR != null && Constants.COLOR_SENSOR.length() != 0)
@@ -44,40 +63,57 @@ public class Robot {
 
         this.wait(time);
 
-        this.getLeftMotor().reset();
-        this.getRightMotor().reset();
+        reset(); // TODO: make only main motors stop
     }
 
     /* reset all motors */
     public void reset() {
-        this.getLeftMotor().reset();
-        this.getRightMotor().reset();
+        this.getMotor1().reset();
+        this.getMotor2().reset();
+        this.getMotor3().reset();
+        this.getMotor4().reset();
     }
 
     /* set power on all motors */
     public void setPower(double speed) {
-        this.getLeftMotor().setPower(speed);
-        this.getRightMotor().setPower(speed);
+        this.getMotor1().setPower(speed);
+        this.getMotor2().setPower(speed);
+        this.getMotor3().setPower(speed);
+        this.getMotor4().setPower(speed);
     }
 
-    /* get left motor */
-    public Motor getLeftMotor() {
-        return this.left;
+    /* get motors */
+    public Motor getMotor1() {
+        return this.m1;
+    }
+    public Motor getMotor2() {
+        return this.m2;
+    }
+    public Motor getMotor3() {
+        return this.m3;
+    }
+    public Motor getMotor4() {
+        return this.m4;
     }
 
-    /* get middle motor */
-    public Servo getMiddleServo() {
-        return this.middle;
+    /* get servos */
+    public Servo getServo1() {
+        return this.s1;
     }
-
-    /* get right motor */
-    public Motor getRightMotor() {
-        return this.right;
+    public Servo getServo2() {
+        return this.s2;
     }
-
-    /* easter egg */
-    public Motor getPoliticallyNeutralMotor() {
-        return this.right;
+    public Servo getServo3() {
+        return this.s3;
+    }
+    public Servo getServo4() {
+        return this.s4;
+    }
+    public Servo getServoArm1() {
+        return this.sa1;
+    }
+    public Servo getServoArm2() {
+        return this.sa2;
     }
 
     /* get Opmode */

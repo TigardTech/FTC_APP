@@ -92,6 +92,7 @@ public class TestTeleOpMode extends TeleOpMode {
             this.getRobot().getMotor2().reset();
             this.getRobot().getMotor3().reset();
             this.getRobot().getMotor4().reset();
+
             this.getRobot().getServo1().setPosition(0);
             this.getRobot().getServo2().setPosition(0);
             this.getRobot().getServo3().setPosition(0);

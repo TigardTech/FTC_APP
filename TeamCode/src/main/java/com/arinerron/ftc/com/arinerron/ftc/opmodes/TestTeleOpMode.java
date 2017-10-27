@@ -37,6 +37,12 @@ public class TestTeleOpMode extends TeleOpMode {
 
         if(Double.isNaN(this.getRobot().getServo1().getPosition()))
             this.getRobot().getServo1().setPosition(0);
+        if(Double.isNaN(this.getRobot().getServo2().getPosition()))
+            this.getRobot().getServo2().setPosition(0);
+        if(Double.isNaN(this.getRobot().getServo3().getPosition()))
+            this.getRobot().getServo3().setPosition(0);
+        if(Double.isNaN(this.getRobot().getServo4().getPosition()))
+            this.getRobot().getServo4().setPosition(0);
 
         if(this.getGamepad().right_bumper) {
             if(!pressed) {
@@ -81,10 +87,7 @@ public class TestTeleOpMode extends TeleOpMode {
             this.getRobot().getMotor3().setPower(y);
             this.getRobot().getMotor4().setPower(y);
         } else {
-            this.getRobot().getMotor1().reset();
-            this.getRobot().getMotor2().reset();
-            this.getRobot().getMotor3().reset();
-            this.getRobot().getMotor4().reset();
+            this.getRobot().reset();
         }
 
         if(this.getGamepad().left_bumper) {

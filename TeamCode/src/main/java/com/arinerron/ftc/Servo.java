@@ -1,5 +1,7 @@
 package com.arinerron.ftc;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
+
 public class Servo {
     private com.qualcomm.robotcore.hardware.Servo servo = null;
     private Robot robot = null;
@@ -20,7 +22,16 @@ public class Servo {
 
     /* sets the servo's position */
     public void setPosition(double position) {
-        this.getServo().setPosition(this.getCenter() + position);
+        this.getServo().setPosition(check(this.getCenter() + position));
+    }
+
+    /* check servo to make sure it isn't running more pos than it should */
+    public double check(double pos) {
+        if(pos < -1)
+            return -1;
+        if(pos > 1)
+            return 1;
+        return pos;
     }
 
     /* sets the servo's position to an "angle" from 0-360 */

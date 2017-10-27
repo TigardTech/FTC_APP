@@ -2,7 +2,7 @@ package com.arinerron.ftc;
 
 import java.util.Stack;
 
-class LogData {
+public class LogData {
     private String tag = "INFO";
     private String content = "";
 

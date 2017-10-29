@@ -16,6 +16,7 @@ public class Constants {
     public static final String M2_MOTOR = "motor2";
     public static final String M3_MOTOR = "motor3";
     public static final String M4_MOTOR = "motor4";
+    public static final String ARM_MOTOR = "motor_arm";
 
     /* define sensor names. empty string disables sensor. */
     public static final String COLOR_SENSOR = "";

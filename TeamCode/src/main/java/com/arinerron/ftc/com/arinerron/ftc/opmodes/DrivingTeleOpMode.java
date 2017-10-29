@@ -129,6 +129,14 @@ public class DrivingTeleOpMode extends TeleOpMode {
                 }
             } else
                 pressed = false;
+
+            if(this.getGamepad().left_trigger > Constants.TRIGGER_THRESHOLD) {
+                this.getRobot().getMotorArm().setPower(-this.getGamepad().left_trigger);
+            } else if(this.getGamepad().right_trigger > Constants.TRIGGER_THRESHOLD) {
+                this.getRobot().getMotorArm().setPower(-this.getGamepad().right_trigger);
+            } else {
+                this.getRobot().getMotorArm().setPower(0);
+            }
         }
     }
 

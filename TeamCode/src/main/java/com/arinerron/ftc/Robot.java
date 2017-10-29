@@ -11,6 +11,7 @@ public class Robot {
     private Motor m2 = null;
     private Motor m3 = null;
     private Motor m4 = null;
+    private Motor arm = null;
     // wheel servos
     private Servo s1 = null;
     private Servo s2 = null;
@@ -37,6 +38,7 @@ public class Robot {
         this.s3 = new Servo(this, this.getOpMode().getServo(Constants.S3_SERVO));
         this.m4 = new Motor(this, this.getOpMode().getMotor(Constants.M4_MOTOR));
         this.s4 = new Servo(this, this.getOpMode().getServo(Constants.S4_SERVO));
+        this.arm = new Motor(this, this.getOpMode().getMotor(Constants.ARM_MOTOR));
         this.sa1 = new Servo(this, this.getOpMode().getServo(Constants.SA1_SERVO));
         this.sa2 = new Servo(this, this.getOpMode().getServo(Constants.SA2_SERVO));
 
@@ -94,6 +96,9 @@ public class Robot {
     }
     public Motor getMotor4() {
         return this.m4;
+    }
+    public Motor getMotorArm() {
+        return this.arm;
     }
 
     /* get servos */

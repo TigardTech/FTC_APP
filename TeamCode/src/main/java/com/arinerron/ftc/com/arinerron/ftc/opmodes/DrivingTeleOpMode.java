@@ -28,7 +28,8 @@ public class DrivingTeleOpMode extends TeleOpMode {
 
     private boolean left = false, right = false, up = false, down = false;
 
-    private final double[] straight = {1, 0.2, 0.7, 0.3}, ff = {0.6, 0.6, 0.3, 0.6}, ninety = {0.3, 0.9, 0, 1};
+    private final double[] straight /*0*/ = {1, 0.2, 0.7, 0.3}, ff /*1*/ = {0.6, 0.6, 0.3, 0.6}, ninety /*-1*/ = {0.3, 0.9, 0, 1};
+    private int dir = 0;
 
     public void pointStraight() {
         /*
@@ -37,6 +38,8 @@ public class DrivingTeleOpMode extends TeleOpMode {
          * |   |
          *
          */
+
+        dir = 0;
 
         this.getRobot().getServo1().setPosition(straight[0]);
         this.getRobot().getServo2().setPosition(straight[1]);
@@ -52,6 +55,8 @@ public class DrivingTeleOpMode extends TeleOpMode {
          *
          */
 
+        dir = 1;
+
         this.getRobot().getServo1().setPosition(ff[0]);
         this.getRobot().getServo2().setPosition(ff[1]);
         this.getRobot().getServo3().setPosition(ff[2]);
@@ -65,6 +70,8 @@ public class DrivingTeleOpMode extends TeleOpMode {
          * _   _
          *
          */
+
+        dir = -1;
 
         this.getRobot().getServo1().setPosition(ninety[0]);
         this.getRobot().getServo2().setPosition(ninety[1]);
@@ -102,10 +109,20 @@ public class DrivingTeleOpMode extends TeleOpMode {
             }
 
             if(!isZero(y)) {
-                this.getRobot().getMotor1().setPower(y);
-                this.getRobot().getMotor2().setPower(y);
-                this.getRobot().getMotor3().setPower(y);
-                this.getRobot().getMotor4().setPower(y);
+                if(dir != -1) {
+                    // straight or ff
+                    this.getRobot().getMotor1().setPower(y);
+                    this.getRobot().getMotor2().setPower(y);
+                    this.getRobot().getMotor3().setPower(y);
+                    this.getRobot().getMotor4().setPower(y);
+                } else {
+                    // ninety = invert some of these   l a t e r  ...
+                    this.getRobot().getMotor1().setPower(y);
+                    this.getRobot().getMotor2().setPower(y);
+                    this.getRobot().getMotor3().setPower(y);
+                    this.getRobot().getMotor4().setPower(y);
+
+                }
             } else {
                 this.getRobot().getMotor1().setPower(0);
                 this.getRobot().getMotor2().setPower(0);

@@ -109,19 +109,26 @@ public class DrivingTeleOpMode extends TeleOpMode {
             }
 
             if(!isZero(y)) {
-                if(dir != -1) {
-                    // straight or ff
-                    this.getRobot().getMotor1().setPower(y);
+                if(dir == 0) {
+                    // straight
+                    this.getRobot().getMotor1().setPower(-y);
                     this.getRobot().getMotor2().setPower(y);
                     this.getRobot().getMotor3().setPower(y);
-                    this.getRobot().getMotor4().setPower(y);
-                } else {
+                    this.getRobot().getMotor4().setPower(-y);
+                }
+            } else if(!isZero(x)) {
+                if(dir == 1) {
+                    // ff
+                    this.getRobot().getMotor1().setPower(x);
+                    this.getRobot().getMotor2().setPower(x);
+                    this.getRobot().getMotor3().setPower(x);
+                    this.getRobot().getMotor4().setPower(x);
+                } else if(dir == -1) {
                     // ninety = invert some of these   l a t e r  ...
-                    this.getRobot().getMotor1().setPower(y);
-                    this.getRobot().getMotor2().setPower(y);
-                    this.getRobot().getMotor3().setPower(y);
-                    this.getRobot().getMotor4().setPower(y);
-
+                    this.getRobot().getMotor1().setPower(x);
+                    this.getRobot().getMotor2().setPower(x);
+                    this.getRobot().getMotor3().setPower(-x);
+                    this.getRobot().getMotor4().setPower(-x);
                 }
             } else {
                 this.getRobot().getMotor1().setPower(0);
@@ -134,13 +141,19 @@ public class DrivingTeleOpMode extends TeleOpMode {
                 if(!pressed) {
                     pressed = true;
 
+                    /*
+                     * NOTE:
+                     * When closing, give 0.25 space so it doesn't freak out
+                     */
                     if(holding) {
-                        this.getRobot().getServoArm1().setPosition(0);
-                        this.getRobot().getServoArm2().setPosition(1);
+                        // open arms
+                        this.getRobot().getServoArm1().setPosition(0.25);
+                        this.getRobot().getServoArm2().setPosition(0.75);
                         holding = false;
                     } else {
-                        this.getRobot().getServoArm1().setPosition(1);
-                        this.getRobot().getServoArm2().setPosition(0);
+                        // close arms
+                        this.getRobot().getServoArm1().setPosition(0.75);
+                        this.getRobot().getServoArm2().setPosition(0.25);
                         holding = true;
                     }
                 }
@@ -148,9 +161,9 @@ public class DrivingTeleOpMode extends TeleOpMode {
                 pressed = false;
 
             if(this.getGamepad().left_trigger > Constants.TRIGGER_THRESHOLD) {
-                this.getRobot().getMotorArm().setPower(-this.getGamepad().left_trigger);
+                this.getRobot().getMotorArm().setPower(-this.getGamepad().left_trigger / 2);
             } else if(this.getGamepad().right_trigger > Constants.TRIGGER_THRESHOLD) {
-                this.getRobot().getMotorArm().setPower(-this.getGamepad().right_trigger);
+                this.getRobot().getMotorArm().setPower(this.getGamepad().right_trigger);
             } else {
                 this.getRobot().getMotorArm().setPower(0);
             }

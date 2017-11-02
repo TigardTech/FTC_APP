@@ -7,6 +7,7 @@ public class Motor {
     private Robot robot = null;
     private DcMotor motor = null;
     private ElapsedTime timer = new ElapsedTime();
+    private int multiplier = 1;
 
     public Motor(Robot robot, DcMotor motor) {
         this.robot = robot;
@@ -30,7 +31,7 @@ public class Motor {
 
     /* set the motor's power */
     public void setPower(double power) {
-        this.getDcMotor().setPower(power);
+        this.getDcMotor().setPower(multiplier * power);
     }
 
     /* reset the motor */
@@ -41,6 +42,14 @@ public class Motor {
     private void wait(double seconds) {
         timer.reset();
         while(timer.seconds() < seconds);
+    }
+
+    public void invert() {
+        multiplier *= -1;
+    }
+
+    public void invert(boolean inverted) {
+        multiplier = (inverted ? -1 : 1);
     }
 
     /* returns the power of the motor */

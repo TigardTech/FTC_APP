@@ -48,6 +48,9 @@ public class Robot {
         this.getMotor3().setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
         this.getMotor4().setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        this.getMotor1().invert(true);
+        this.getMotor2().invert(true);
+
         // define sensors
         if(Constants.COLOR_SENSOR != null && Constants.COLOR_SENSOR.length() != 0)
             this.sensorColor = this.getOpMode().getColorSensor(Constants.COLOR_SENSOR);

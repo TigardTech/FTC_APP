@@ -80,6 +80,11 @@ public abstract class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpM
         telemetry.update();
     }
 
+    public void write(String data, boolean asdf) {
+        telemetry.addData(Constants.ROBOT_NAME, data);
+        telemetry.update();
+    }
+
     public Robot getRobot() {
         return this.robot;
     }

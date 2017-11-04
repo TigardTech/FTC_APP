@@ -31,52 +31,93 @@ public class DrivingTeleOpMode extends TeleOpMode {
     private final double[] straight /*0*/ = {1, 0.2, 0.7, 0.3}, ff /*1*/ = {0.6, 0.6, 0.3, 0.6}, ninety /*-1*/ = {0.3, 0.9, 0, 1};
     private int dir = 0;
 
-    public void pointStraight() {
-        /*
-         * |   |
-         *
-         * |   |
-         *
-         */
+    public void point(int direction) {
+        if(direction == 1) {
+            /*
+             * _   _
+             *
+             * _   _
+             *
+             */
+            this.getRobot().getServo1().setPosition(ninety[0]);
+            this.getRobot().getServo2().setPosition(ninety[1]);
+            this.getRobot().getServo3().setPosition(ninety[2]);
+            this.getRobot().getServo4().setPosition(ninety[3]);
+        } else if(direction == -1) {
+            /*
+             * /   \
+             *
+             * \   /
+             *
+             */
+            this.getRobot().getServo1().setPosition(ff[0]);
+            this.getRobot().getServo2().setPosition(ff[1]);
+            this.getRobot().getServo3().setPosition(ff[2]);
+            this.getRobot().getServo4().setPosition(ff[3]);
+        } else {
+            /*
+             * |   |
+             *
+             * |   |
+             *
+             */
+            this.getRobot().getServo1().setPosition(straight[0]);
+            this.getRobot().getServo2().setPosition(straight[1]);
+            this.getRobot().getServo3().setPosition(straight[2]);
+            this.getRobot().getServo4().setPosition(straight[3]);
+        }
 
-        dir = 0;
-
-        this.getRobot().getServo1().setPosition(straight[0]);
-        this.getRobot().getServo2().setPosition(straight[1]);
-        this.getRobot().getServo3().setPosition(straight[2]);
-        this.getRobot().getServo4().setPosition(straight[3]);
+        dir = direction;
     }
 
-    public void pointFortyFive() {
-        /*
-         * /   \
-         *
-         * \   /
-         *
-         */
-
-        dir = 1;
-
-        this.getRobot().getServo1().setPosition(ff[0]);
-        this.getRobot().getServo2().setPosition(ff[1]);
-        this.getRobot().getServo3().setPosition(ff[2]);
-        this.getRobot().getServo4().setPosition(ff[3]);
+    public void drive(double x) {
+        if (dir == 1) {
+            // ff
+            this.getRobot().getMotor1().setPower(x);
+            this.getRobot().getMotor2().setPower(x);
+            this.getRobot().getMotor3().setPower(-x);
+            this.getRobot().getMotor4().setPower(-x);
+        } else if (dir == -1) {
+            // ninety = invert some of these   l a t e r  ...
+            this.getRobot().getMotor1().setPower(x);
+            this.getRobot().getMotor2().setPower(-x); // inverted
+            this.getRobot().getMotor3().setPower(x); // inverted
+            this.getRobot().getMotor4().setPower(-x);
+        } else if (dir == 0) {
+            // straight
+            this.getRobot().getMotor1().setPower(-x);
+            this.getRobot().getMotor2().setPower(x); // inverted
+            this.getRobot().getMotor3().setPower(x); // inverted
+            this.getRobot().getMotor4().setPower(-x);
+        }
     }
 
-    public void pointOppositeStraight() { // aka "90"
-        /*
-         * _   _
-         *
-         * _   _
-         *
-         */
+    public void stop() {
+        this.getRobot().getMotor1().setPower(0);
+        this.getRobot().getMotor2().setPower(0);
+        this.getRobot().getMotor3().setPower(0);
+        this.getRobot().getMotor4().setPower(0);
+    }
 
-        dir = -1;
+    public void check() {
+        if(this.getRobot().getServo1() != null && Double.isNaN(this.getRobot().getServo1().getPosition()))
+            this.getRobot().getServo1().setPosition(straight[0]);
+        if(this.getRobot().getServo2() != null && Double.isNaN(this.getRobot().getServo2().getPosition()))
+            this.getRobot().getServo2().setPosition(straight[1]);
+        if(this.getRobot().getServo3() != null && Double.isNaN(this.getRobot().getServo3().getPosition()))
+            this.getRobot().getServo3().setPosition(straight[2]);
+        if(this.getRobot().getServo4() != null && Double.isNaN(this.getRobot().getServo4().getPosition()))
+            this.getRobot().getServo4().setPosition(straight[3]);
+    }
 
-        this.getRobot().getServo1().setPosition(ninety[0]);
-        this.getRobot().getServo2().setPosition(ninety[1]);
-        this.getRobot().getServo3().setPosition(ninety[2]);
-        this.getRobot().getServo4().setPosition(ninety[3]);
+    public void armsOpen(boolean yes) {
+        if(yes) {
+            this.getRobot().getServoArm1().setPosition(0.25);
+            this.getRobot().getServoArm2().setPosition(0.75);
+        } else {
+            this.getRobot().getServoArm1().setPosition(0.75);
+            this.getRobot().getServoArm2().setPosition(0.25);
+        }
     }
 
     private boolean pressed = false, holding = false, mode = true, apressed = false;
@@ -96,23 +137,13 @@ public class DrivingTeleOpMode extends TeleOpMode {
 
         //this.write("debug", "(" + x + ", " + y + "): " + ((double) ((int) ((double) getAngle(x, y) * 100)) / (double) 100) + " degrees");
 
-        if(this.getRobot().getServo1() != null && Double.isNaN(this.getRobot().getServo1().getPosition()))
-            this.getRobot().getServo1().setPosition(straight[0]);
-        if(this.getRobot().getServo2() != null && Double.isNaN(this.getRobot().getServo2().getPosition()))
-            this.getRobot().getServo2().setPosition(straight[1]);
-        if(this.getRobot().getServo3() != null && Double.isNaN(this.getRobot().getServo3().getPosition()))
-            this.getRobot().getServo3().setPosition(straight[2]);
-        if(this.getRobot().getServo4() != null && Double.isNaN(this.getRobot().getServo4().getPosition()))
-            this.getRobot().getServo4().setPosition(straight[3]);
+        check();
 
         if(this.getGamepad().x) {
             apressed = true;
         } else {
             if(apressed) {
-                this.getRobot().getMotor1().setPower(0);
-                this.getRobot().getMotor2().setPower(0);
-                this.getRobot().getMotor3().setPower(0);
-                this.getRobot().getMotor4().setPower(0);
+                stop();
                 mode = !mode;
             }
 
@@ -124,42 +155,21 @@ public class DrivingTeleOpMode extends TeleOpMode {
         if(this.getRobot() != null) {
             if(mode) {
                 if (this.getGamepad().dpad_left) {
-                    pointOppositeStraight(); // previously known as "90"
+                    point(Constants.DIRECTION_NINETY); // previously known as "90"
                 } else if (this.getGamepad().dpad_up) {
                     this.getRobot().reset();
                 } else if (this.getGamepad().dpad_right) {
-                    pointFortyFive();
+                    point(Constants.DIRECTION_FORTYFIVE);
                 } else if (this.getGamepad().dpad_down) {
-                    pointStraight();
+                    point(Constants.DIRECTION_STRAIGHT);
                 }
 
                 if (!isZero(y)) {
-                    if (dir == 0) {
-                        // straight
-                        this.getRobot().getMotor1().setPower(-y);
-                        this.getRobot().getMotor2().setPower(y); // inverted
-                        this.getRobot().getMotor3().setPower(y); // inverted
-                        this.getRobot().getMotor4().setPower(-y);
-                    }
+                    drive(y);
                 } else if (!isZero(x)) {
-                    if (dir == 1) {
-                        // ff
-                        this.getRobot().getMotor1().setPower(x);
-                        this.getRobot().getMotor2().setPower(x);
-                        this.getRobot().getMotor3().setPower(-x);
-                        this.getRobot().getMotor4().setPower(-x);
-                    } else if (dir == -1) {
-                        // ninety = invert some of these   l a t e r  ...
-                        this.getRobot().getMotor1().setPower(x);
-                        this.getRobot().getMotor2().setPower(-x); // inverted
-                        this.getRobot().getMotor3().setPower(x); // inverted
-                        this.getRobot().getMotor4().setPower(-x);
-                    }
+                    drive(x);
                 } else {
-                    this.getRobot().getMotor1().setPower(0);
-                    this.getRobot().getMotor2().setPower(0);
-                    this.getRobot().getMotor3().setPower(0);
-                    this.getRobot().getMotor4().setPower(0);
+                    stop();
                 }
             } else {
                 /* dir: 0=straight, 1=ff, -1=90 */
@@ -168,41 +178,29 @@ public class DrivingTeleOpMode extends TeleOpMode {
                 if(!isZero(y, 0.3)) {
                     // straight
                     if(dir != 0) {
-                        pointStraight();
+                        point(Constants.DIRECTION_STRAIGHT);
                     }
 
-                    this.getRobot().getMotor1().setPower(-y);
-                    this.getRobot().getMotor2().setPower(y); // inverted
-                    this.getRobot().getMotor3().setPower(y); // inverted
-                    this.getRobot().getMotor4().setPower(-y);
+                    drive(y);
 
                 } else if(!isZero(x, 0.3)) {
                     // 90
                     if(dir != -1) {
-                        pointOppositeStraight();
+                        point(Constants.DIRECTION_NINETY);
                     }
 
-                    this.getRobot().getMotor1().setPower(x);
-                    this.getRobot().getMotor2().setPower(-x); // inverted
-                    this.getRobot().getMotor3().setPower(x); // inverted
-                    this.getRobot().getMotor4().setPower(-x);
+                    drive(x);
 
                 } else if(!isZero(x1)) {
                     // ff
                     if (dir != 1) {
-                        pointFortyFive();
+                        point(Constants.DIRECTION_FORTYFIVE);
                     }
 
-                    this.getRobot().getMotor1().setPower(x1);
-                    this.getRobot().getMotor2().setPower(x1);
-                    this.getRobot().getMotor3().setPower(-x1);
-                    this.getRobot().getMotor4().setPower(-x1);
+                    drive(x1);
                 } else {
                     // slow down
-                    this.getRobot().getMotor1().setPower(0);
-                    this.getRobot().getMotor2().setPower(0);
-                    this.getRobot().getMotor3().setPower(0);
-                    this.getRobot().getMotor4().setPower(0);
+                    stop();
                 }
             }
         }
@@ -217,13 +215,11 @@ public class DrivingTeleOpMode extends TeleOpMode {
                  */
                 if (holding) {
                     // open arms
-                    this.getRobot().getServoArm1().setPosition(0.25);
-                    this.getRobot().getServoArm2().setPosition(0.75);
+                    armsOpen(true);
                     holding = false;
                 } else {
                     // close arms
-                    this.getRobot().getServoArm1().setPosition(0.75);
-                    this.getRobot().getServoArm2().setPosition(0.25);
+                    armsOpen(false);
                     holding = true;
                 }
             }

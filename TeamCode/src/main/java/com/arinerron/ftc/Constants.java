@@ -25,4 +25,9 @@ public class Constants {
     /* thresholds */
     public static final double DRIVING_THRESHOLD = 0.1;
     public static final double TRIGGER_THRESHOLD = 0.1;
+
+    /* other useful stuff */
+    public static final int DIRECTION_STRAIGHT = 0;
+    public static final int DIRECTION_FORTYFIVE = 1;
+    public static final int DIRECTION_NINETY = -1;
 }

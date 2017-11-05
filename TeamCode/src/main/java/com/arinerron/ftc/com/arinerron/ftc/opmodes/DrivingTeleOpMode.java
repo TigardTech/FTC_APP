@@ -71,6 +71,7 @@ public class DrivingTeleOpMode extends TeleOpMode {
     }
 
     public void drive(double x) {
+        /* dir: 0=straight, 1=ff, -1=90 */
         if (dir == 1) {
             // ff
             this.getRobot().getMotor1().setPower(x);
@@ -135,9 +136,12 @@ public class DrivingTeleOpMode extends TeleOpMode {
                 "Arm: " + (holding ? "closed" : "opened") + "\n" +
                 "Direction: " + (dir == 0 ? "straight" : (dir == 1 ? "forty five" : "horizontal")), true);
 
-        //this.write("debug", "(" + x + ", " + y + "): " + ((double) ((int) ((double) getAngle(x, y) * 100)) / (double) 100) + " degrees");
-
         check();
+
+        if(this.getGamepad().b) {
+            stop();
+            this.getRobot().getMotorArm().setPower(0);
+        }
 
         if(this.getGamepad().x) {
             apressed = true;
@@ -149,8 +153,6 @@ public class DrivingTeleOpMode extends TeleOpMode {
 
             apressed = false;
         }
-
-        /* dir: 0=straight, 1=ff, -1=90 */
 
         if(this.getRobot() != null) {
             if(mode) {

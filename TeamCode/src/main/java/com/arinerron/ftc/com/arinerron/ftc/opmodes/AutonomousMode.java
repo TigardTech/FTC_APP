@@ -1,14 +1,13 @@
 package com.arinerron.ftc.com.arinerron.ftc.opmodes;
 
 import com.arinerron.ftc.Constants;
-import com.arinerron.ftc.Motor;
-import com.arinerron.ftc.Servo;
-import com.arinerron.ftc.TeleOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.arinerron.ftc.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name = "DrivingOpMode", group = "TeleOp")
-public class DrivingTeleOpMode extends TeleOpMode {
-    public DrivingTeleOpMode() {
+@Autonomous(name="Drive Forward", group="Iterative OpMode")
+public class AutonomousMode extends OpMode {
+    public AutonomousMode() {
         super();
 
         write("Driving OpMode initialized.");
@@ -22,8 +21,8 @@ public class DrivingTeleOpMode extends TeleOpMode {
     }
 
     @Override
-    public void run() {
-        write("OpMode running...");
+    public void repeat() {
+
     }
 
     private boolean left = false, right = false, up = false, down = false;
@@ -123,118 +122,25 @@ public class DrivingTeleOpMode extends TeleOpMode {
 
     private boolean pressed = false, holding = false, mode = true, apressed = false;
 
+    private ElapsedTime timer = new ElapsedTime();
+
     @Override
-    public void repeat() {
-        double x = this.getGamepad().right_stick_x;
-        double y = -this.getGamepad().right_stick_y;
-        double x1 = this.getGamepad().left_stick_x;
-        double y1 = -this.getGamepad().left_stick_y;
+    public void run() {
+        write("OpMode running...");
+        point(Constants.DIRECTION_STRAIGHT);
+        this.getRobot().getMotor1().setPower(-1);
+        this.getRobot().getMotor2().setPower(1);
+        this.getRobot().getMotor3().setPower(1);
+        this.getRobot().getMotor4().setPower(-1);
+        this.waitr(1.25);
+        stop();
+    }
 
-        this.write("Mode: " + (mode ? "advanced" : "simple") + "\n" +
-                "Stick: (" + ((double)Math.round(x1 * 10d) / 10d) + ", " + ((double)Math.round(y1 * 10d) / 10d) + ") & (" + ((double)Math.round(x * 10d) / 10d) + ", " + ((double)Math.round(y * 10d) / 10d) + ")\n" +
-                "Motors: " + ((!isZero(this.getRobot().getMotor1().getPower()) || !isZero(this.getRobot().getMotor2().getPower()) || !isZero(this.getRobot().getMotor3().getPower()) || !isZero(this.getRobot().getMotor4().getPower())) ? "active" : "inactive") + "\n" +
-                "Arm: " + (holding ? "closed" : "opened") + "\n" +
-                "Direction: " + (dir == 0 ? "straight" : (dir == 1 ? "forty five" : "horizontal")), true);
 
-        check();
 
-        if(this.getGamepad().b) {
-            stop();
-            this.getRobot().getMotorArm().setPower(0);
-        }
-
-        if(this.getGamepad().x) {
-            apressed = true;
-        } else {
-            if(apressed) {
-                stop();
-                mode = !mode;
-            }
-
-            apressed = false;
-        }
-
-        if(this.getRobot() != null) {
-            if(mode) {
-                if (this.getGamepad().dpad_left) {
-                    point(Constants.DIRECTION_NINETY); // previously known as "90"
-                } else if (this.getGamepad().dpad_up) {
-                    this.getRobot().reset();
-                } else if (this.getGamepad().dpad_right) {
-                    point(Constants.DIRECTION_FORTYFIVE);
-                } else if (this.getGamepad().dpad_down) {
-                    point(Constants.DIRECTION_STRAIGHT);
-                }
-
-                if (!isZero(y)) {
-                    drive(y);
-                } else if (!isZero(x)) {
-                    drive(x);
-                } else {
-                    stop();
-                }
-            } else {
-                /* dir: 0=straight, 1=ff, -1=90 */
-
-                // other mode
-                if(!isZero(y, 0.3)) {
-                    // straight
-                    if(dir != 0) {
-                        point(Constants.DIRECTION_STRAIGHT);
-                    }
-
-                    drive(y);
-
-                } else if(!isZero(x, 0.3)) {
-                    // 90
-                    if(dir != -1) {
-                        point(Constants.DIRECTION_NINETY);
-                    }
-
-                    drive(x);
-
-                } else if(!isZero(x1)) {
-                    // ff
-                    if (dir != 1) {
-                        point(Constants.DIRECTION_FORTYFIVE);
-                    }
-
-                    drive(x1);
-                } else {
-                    // slow down
-                    stop();
-                }
-            }
-        }
-
-        if (this.getGamepad().right_bumper) {
-            if (!pressed) {
-                pressed = true;
-
-                /*
-                 * NOTE:
-                 * When closing, give 0.25 space so it doesn't freak out
-                 */
-                if (holding) {
-                    // open arms
-                    armsOpen(true);
-                    holding = false;
-                } else {
-                    // close arms
-                    armsOpen(false);
-                    holding = true;
-                }
-            }
-        } else
-            pressed = false;
-
-        if (this.getGamepad().left_trigger > Constants.TRIGGER_THRESHOLD) {
-            this.getRobot().getMotorArm().setPower(-this.getGamepad().left_trigger / 2);
-        } else if (this.getGamepad().right_trigger > Constants.TRIGGER_THRESHOLD) {
-            this.getRobot().getMotorArm().setPower(this.getGamepad().right_trigger);
-        } else {
-            this.getRobot().getMotorArm().setPower(0);
-        }
+    private void waitr(double seconds) {
+        timer.reset();
+        while(timer.seconds() < seconds);
     }
 
 

@@ -237,7 +237,6 @@ public class DrivingTeleOpMode extends TeleOpMode {
         }
     }
 
-
     public static boolean isZero(double x) {
         return x < Constants.TRIGGER_THRESHOLD && x > -Constants.TRIGGER_THRESHOLD;
     }

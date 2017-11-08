@@ -25,6 +25,8 @@ public class Robot {
     private GyroSensor sensorGyro = null;
     private OpMode mode = null;
 
+    private Driver driver = null;
+
     /* robot constructor, initialize stuff */
     public Robot(OpMode mode) {
         this.mode = mode;
@@ -48,8 +50,7 @@ public class Robot {
         this.getMotor3().setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
         this.getMotor4().setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        this.getMotor1().invert(true);
-        this.getMotor2().invert(true);
+        this.driver = new Driver(this);
 
         // define sensors
         if(Constants.COLOR_SENSOR != null && Constants.COLOR_SENSOR.length() != 0)

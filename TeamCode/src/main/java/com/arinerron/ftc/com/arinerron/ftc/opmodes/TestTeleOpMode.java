@@ -1,6 +1,7 @@
 package com.arinerron.ftc.com.arinerron.ftc.opmodes;
 
 import com.arinerron.ftc.Constants;
+import com.arinerron.ftc.Servo;
 import com.arinerron.ftc.TeleOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -28,12 +29,15 @@ public class TestTeleOpMode extends TeleOpMode {
 
     private boolean pressed = false, holding = false;
 
+    public Servo servo = null;
+
     @Override
     public void repeat() {
         double x = this.getGamepad().right_stick_x;
         double y = -this.getGamepad().right_stick_y;
 
-        this.write("debug", "(" + x + ", " + y + "): " + ((double) ((int) ((double) getAngle(x, y) * 100)) / (double) 100) + " degrees");
+        if(servo != null)
+            this.write("debug", "pos: " + servo.getPosition() + " & arm: " + (holding ? "2" : "1"));
 
         if(Double.isNaN(this.getRobot().getServo1().getPosition()))
             this.getRobot().getServo1().setPosition(0);
@@ -43,18 +47,20 @@ public class TestTeleOpMode extends TeleOpMode {
             this.getRobot().getServo3().setPosition(0);
         if(Double.isNaN(this.getRobot().getServo4().getPosition()))
             this.getRobot().getServo4().setPosition(0);
+        if(Double.isNaN(this.getRobot().getServoArm1().getPosition()))
+            this.getRobot().getServoArm1().setPosition(0.5);
+        if(Double.isNaN(this.getRobot().getServoArm2().getPosition()))
+            this.getRobot().getServoArm2().setPosition(0.5);
 
         if(this.getGamepad().right_bumper) {
             if(!pressed) {
                 pressed = true;
 
                 if(holding) {
-                    this.getRobot().getServoArm1().setPosition(0);
-                    this.getRobot().getServoArm2().setPosition(1);
+                    servo = this.getRobot().getServoArm1();
                     holding = false;
                 } else {
-                    this.getRobot().getServoArm1().setPosition(1);
-                    this.getRobot().getServoArm2().setPosition(0);
+                    servo = this.getRobot().getServoArm2();
                     holding = true;
                 }
             }
@@ -68,16 +74,21 @@ public class TestTeleOpMode extends TeleOpMode {
         } else {
             if(this.left && !this.getGamepad().x) {
                 this.left = false;
+                if(servo != null)
+                    servo.setPosition(servo.getPosition() - 0.1d);
+                /*
                 this.getRobot().getServo1().setPosition((double) this.getRobot().getServo1().getPosition() - (double) 0.1);
                 this.getRobot().getServo2().setPosition((double) this.getRobot().getServo2().getPosition() - (double) 0.1);
                 this.getRobot().getServo3().setPosition((double) this.getRobot().getServo3().getPosition() - (double) 0.1);
-                this.getRobot().getServo4().setPosition((double) this.getRobot().getServo4().getPosition() - (double) 0.1);
+                this.getRobot().getServo4().setPosition((double) this.getRobot().getServo4().getPosition() - (double) 0.1);*/
             } else if(this.right && !this.getGamepad().b) {
                 this.right = false;
-                this.getRobot().getServo1().setPosition((double) this.getRobot().getServo1().getPosition() + (double) 0.1);
+                if(servo != null)
+                    servo.setPosition(servo.getPosition() + 0.1d);
+                /*this.getRobot().getServo1().setPosition((double) this.getRobot().getServo1().getPosition() + (double) 0.1);
                 this.getRobot().getServo2().setPosition((double) this.getRobot().getServo2().getPosition() + (double) 0.1);
                 this.getRobot().getServo3().setPosition((double) this.getRobot().getServo3().getPosition() + (double) 0.1);
-                this.getRobot().getServo4().setPosition((double) this.getRobot().getServo4().getPosition() + (double) 0.1);
+                this.getRobot().getServo4().setPosition((double) this.getRobot().getServo4().getPosition() + (double) 0.1);*/
             }
         }
 

@@ -134,7 +134,8 @@ public class DrivingTeleOpMode extends TeleOpMode {
                 "Stick: (" + ((double)Math.round(x1 * 10d) / 10d) + ", " + ((double)Math.round(y1 * 10d) / 10d) + ") & (" + ((double)Math.round(x * 10d) / 10d) + ", " + ((double)Math.round(y * 10d) / 10d) + ")\n" +
                 "Motors: " + ((!isZero(this.getRobot().getMotor1().getPower()) || !isZero(this.getRobot().getMotor2().getPower()) || !isZero(this.getRobot().getMotor3().getPower()) || !isZero(this.getRobot().getMotor4().getPower())) ? "active" : "inactive") + "\n" +
                 "Arm: " + (holding ? "closed" : "opened") + "\n" +
-                "Direction: " + (dir == 0 ? "straight" : (dir == 1 ? "forty five" : "horizontal")), true);
+                "Direction: " + (dir == 0 ? "straight" : (dir == 1 ? "forty five" : "horizontal")) + "\n" +
+                "Servos: arm{" + this.getRobot().getServoArm1().getPosition() + ", " + this.getRobot().getServoArm2().getPosition() + "}", true);
 
         check();
 

@@ -6,7 +6,7 @@ import com.arinerron.ftc.Servo;
 import com.arinerron.ftc.TeleOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "DrivingOpMode", group = "TeleOp")
+@TeleOp(name = "Teleop", group = "TeleOp")
 public class DrivingTeleOpMode extends TeleOpMode {
     public DrivingTeleOpMode() {
         super();

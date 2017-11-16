@@ -4,9 +4,11 @@ import com.arinerron.ftc.Constants;
 import com.arinerron.ftc.Motor;
 import com.arinerron.ftc.Servo;
 import com.arinerron.ftc.TeleOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "ServoTest", group = "TeleOp")
+//@TeleOp(name = "ServoTest", group = "TeleOp")
+@Disabled
 public class MainTeleOpMode extends TeleOpMode {
     public MainTeleOpMode() {
         super();

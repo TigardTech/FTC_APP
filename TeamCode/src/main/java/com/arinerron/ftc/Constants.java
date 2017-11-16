@@ -12,6 +12,7 @@ public class Constants {
     public static final String S4_SERVO = "servo4";
     public static final String SA1_SERVO = "servo_arm1";
     public static final String SA2_SERVO = "servo_arm2";
+    public static final String SAE_SERVO = "servo_arme";
     public static final String M1_MOTOR = "motor1";
     public static final String M2_MOTOR = "motor2";
     public static final String M3_MOTOR = "motor3";

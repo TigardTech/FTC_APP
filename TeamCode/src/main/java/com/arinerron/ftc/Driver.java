@@ -117,6 +117,42 @@ public class Driver {
         return Math.toDegrees(1.5 * Math.PI - Math.atan2(y, x)) - 180; // supposed to be y,x
     }
 
+    private Double[] opened = new Double[] {0.8d, 0.4d};
+    private Double[] closed = new Double[] {0.4d, 1.0d};
+
+    /* open: true = open, false = closed */
+    public void setServo(String servo, boolean open) {
+        double pos = 0.5;
+        switch(servo.trim().toLowerCase()) {
+            case "arm1":
+                if(open)
+                    pos = opened[0];
+                else
+                    pos = closed[0];
+                this.getRobot().getServoArm1().setPosition(pos);
+
+                break;
+            case "arm2":
+                if(open)
+                    pos = opened[1];
+                else
+                    pos = closed[1];
+                this.getRobot().getServoArm2().setPosition(pos);
+
+                break;
+            case "arme":
+                if(open)
+                    pos = opened[0];
+                else
+                    pos = closed[0];
+                this.getRobot().getServoArmE().setPosition(pos);
+
+                break;
+            default:
+                System.err.println("lol that servo no exists!!!");
+        }
+    }
+
     public boolean isColor(double r, double g, double b, String name) {
         name = name.toLowerCase(); // get the lower case version of the name
 

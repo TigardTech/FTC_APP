@@ -20,6 +20,7 @@ public class Robot {
     // arm servos
     private Servo sa1 = null;
     private Servo sa2 = null;
+    private Servo sae = null;
 
     private ColorSensor sensorColor = null;
     private GyroSensor sensorGyro = null;
@@ -43,6 +44,7 @@ public class Robot {
         this.arm = new Motor(this, this.getOpMode().getMotor(Constants.ARM_MOTOR));
         this.sa1 = new Servo(this, this.getOpMode().getServo(Constants.SA1_SERVO));
         this.sa2 = new Servo(this, this.getOpMode().getServo(Constants.SA2_SERVO));
+        this.sae = new Servo(this, this.getOpMode().getServo(Constants.SAE_SERVO));
 
         // enable/disable encoders on motors
         this.getMotor1().setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -61,6 +63,11 @@ public class Robot {
         // calibrate sensors
         if(this.getGyroSensor() != null)
             this.getGyroSensor().calibrate();
+    }
+
+    /* get driver object */
+    public Driver getDriver() {
+        return this.driver;
     }
 
     /* drive for x seconds at x speed */
@@ -123,6 +130,9 @@ public class Robot {
     }
     public Servo getServoArm2() {
         return this.sa2;
+    }
+    public Servo getServoArmE() {
+        return this.sae;
     }
 
     /* get Opmode */

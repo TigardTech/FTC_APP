@@ -5,7 +5,10 @@ import com.arinerron.ftc.Servo;
 import com.arinerron.ftc.TeleOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "MechanicsTest", group = "TeleOp")
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+@TeleOp(name = "Mechanics Test", group = "TeleOp")
 public class TestTeleOpMode extends TeleOpMode {
     public TestTeleOpMode() {
         super();
@@ -29,6 +32,7 @@ public class TestTeleOpMode extends TeleOpMode {
 
     private boolean pressed = false, holding = false;
 
+    public int servoi = 0;
     public Servo servo = null;
 
     @Override
@@ -37,7 +41,7 @@ public class TestTeleOpMode extends TeleOpMode {
         double y = -this.getGamepad().right_stick_y;
 
         if(servo != null)
-            this.write("debug", "pos: " + servo.getPosition() + " & arm: " + (holding ? "2" : "1"));
+            this.write("debug", "pos: " + round(servo.getPosition(), 2) + " & servo: " + (servoi % 3 == 0 ? "arm" : "arm" + (servoi % 3)));
 
         if(Double.isNaN(this.getRobot().getServo1().getPosition()))
             this.getRobot().getServo1().setPosition(0);
@@ -51,16 +55,29 @@ public class TestTeleOpMode extends TeleOpMode {
             this.getRobot().getServoArm1().setPosition(0.5);
         if(Double.isNaN(this.getRobot().getServoArm2().getPosition()))
             this.getRobot().getServoArm2().setPosition(0.5);
+        if(Double.isNaN(this.getRobot().getServoArmE().getPosition()))
+            this.getRobot().getServoArmE().setPosition(0.5);
 
         if(this.getGamepad().right_bumper) {
             if(!pressed) {
                 pressed = true;
 
+                servoi++;
+                switch (servoi % 3) {
+                    case 0:
+                        servo = this.getRobot().getServoArmE();
+                        break;
+                    case 1:
+                        servo = this.getRobot().getServoArm1();
+                        break;
+                    case 2:
+                        servo = this.getRobot().getServoArm2();
+                        break;
+                }
+
                 if(holding) {
-                    servo = this.getRobot().getServoArm1();
                     holding = false;
                 } else {
-                    servo = this.getRobot().getServoArm2();
                     holding = true;
                 }
             }
@@ -123,5 +140,13 @@ public class TestTeleOpMode extends TeleOpMode {
         if(isZero(x) || isZero(y))
             return 0;
         return Math.toDegrees(1.5 * Math.PI - Math.atan2(y, x)) - 180; // supposed to be y,x
+    }
+
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 }

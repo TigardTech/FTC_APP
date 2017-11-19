@@ -127,6 +127,12 @@ public class AutonomousMode extends OpMode {
     @Override
     public void run() {
         write("OpMode running...");
+
+        // open claws
+        this.getRobot().getDriver().setServo("arm1", true);
+        this.getRobot().getDriver().setServo("arm2", true);
+
+        // drive to the safe zone for points
         point(Constants.DIRECTION_STRAIGHT);
         this.getRobot().getMotor1().setPower(-1);
         this.getRobot().getMotor2().setPower(1);

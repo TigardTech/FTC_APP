@@ -34,7 +34,7 @@ public class TestTeleOpMode extends TeleOpMode {
 
     public int servoi = 0;
     public Servo servo = null;
-
+private boolean pressedl = false, holdingl = false;
     @Override
     public void repeat() {
         double x = this.getGamepad().right_stick_x;
@@ -129,6 +129,24 @@ public class TestTeleOpMode extends TeleOpMode {
             this.getRobot().getServo3().setPosition(0);
             this.getRobot().getServo4().setPosition(0);
         }
+
+        if (this.getGamepad().a) {
+            if (!pressedl) {
+                pressedl = true;
+
+                // could optimize ik
+                if (holdingl) {
+                    // open arms
+                    this.getRobot().getDriver().setServo("arme", true);
+                    holdingl = false;
+                } else {
+                    // close arms
+                    this.getRobot().getDriver().setServo("arme", false);
+                    holdingl = true;
+                }
+            }
+        } else
+            pressedl = false;
     }
 
 

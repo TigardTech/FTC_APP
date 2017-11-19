@@ -112,16 +112,12 @@ public class DrivingTeleOpMode extends TeleOpMode {
     }
 
     public void armsOpen(boolean yes) {
-        if(yes) {
-            this.getRobot().getServoArm1().setPosition(0.25);
-            this.getRobot().getServoArm2().setPosition(0.75);
-        } else {
-            this.getRobot().getServoArm1().setPosition(0.75);
-            this.getRobot().getServoArm2().setPosition(0.25);
-        }
+        this.getRobot().getDriver().setServo("arm1", yes);
+        this.getRobot().getDriver().setServo("arm2", yes);
     }
 
-    private boolean pressed = false, holding = false, mode = true, apressed = false;
+    private boolean pressed = false, holding = false, mode = false, pressedl = false, holdingl = false, apressed = false, rpressed = false;
+    private boolean armtop = true, armbottom = true;
 
     @Override
     public void repeat() {
@@ -130,20 +126,17 @@ public class DrivingTeleOpMode extends TeleOpMode {
         double x1 = this.getGamepad().left_stick_x;
         double y1 = -this.getGamepad().left_stick_y;
 
-        this.write("Mode: " + (mode ? "advanced" : "simple") + "\n" +
+        // debug stuff
+        this.write("\nMode: " + (mode ? "advanced" : "simple") + "\n" +
                 "Stick: (" + ((double)Math.round(x1 * 10d) / 10d) + ", " + ((double)Math.round(y1 * 10d) / 10d) + ") & (" + ((double)Math.round(x * 10d) / 10d) + ", " + ((double)Math.round(y * 10d) / 10d) + ")\n" +
                 "Motors: " + ((!isZero(this.getRobot().getMotor1().getPower()) || !isZero(this.getRobot().getMotor2().getPower()) || !isZero(this.getRobot().getMotor3().getPower()) || !isZero(this.getRobot().getMotor4().getPower())) ? "active" : "inactive") + "\n" +
                 "Arm: " + (holding ? "closed" : "opened") + "\n" +
-                "Direction: " + (dir == 0 ? "straight" : (dir == 1 ? "forty five" : "horizontal")) + "\n" +
-                "Servos: arm{" + this.getRobot().getServoArm1().getPosition() + ", " + this.getRobot().getServoArm2().getPosition() + "}", true);
+                "Direction: " + (dir == 0 ? "straight" : (dir == 1 ? "forty five" : "horizontal")), true);
 
+        // make sure servos & motors aren't dying
         check();
 
-        if(this.getGamepad().b) {
-            stop();
-            this.getRobot().getMotorArm().setPower(0);
-        }
-
+        // change modes from simple to advanced or vice versa
         if(this.getGamepad().x) {
             apressed = true;
         } else {
@@ -156,6 +149,32 @@ public class DrivingTeleOpMode extends TeleOpMode {
         }
 
         if(this.getRobot() != null) {
+            // push out or pull in arms
+            if (this.getGamepad().a) {
+                if (!pressedl) {
+                    pressedl = true;
+
+                    // could optimize ik
+                    if (holdingl) {
+                        // open arms
+                        this.getRobot().getDriver().setServo("arme", true);
+                        holdingl = false;
+                    } else {
+                        // close arms
+                        this.getRobot().getDriver().setServo("arme", false);
+                        holdingl = true;
+                    }
+                }
+            } else {
+                pressedl = false;
+            }
+
+            // stop all motors if pressed
+            if(this.getGamepad().b) {
+                stop();
+                this.getRobot().getMotorArm().setPower(0);
+            }
+
             if(mode) {
                 if (this.getGamepad().dpad_left) {
                     point(Constants.DIRECTION_NINETY); // previously known as "90"
@@ -176,6 +195,43 @@ public class DrivingTeleOpMode extends TeleOpMode {
                 }
             } else {
                 /* dir: 0=straight, 1=ff, -1=90 */
+
+                boolean adjusting = false;
+
+                // arm stuff and small adjustment stuff
+                if (this.getGamepad().dpad_left) {
+                    adjusting = true;
+                    if (dir != 1 && !rpressed) {
+                        rpressed = true;
+                        point(Constants.DIRECTION_FORTYFIVE);
+                    }
+                    drive(-0.2);
+                } else if (this.getGamepad().dpad_up) {
+                    if(!rpressed) {
+                        armtop = !armtop;
+                        rpressed = true;
+                        this.getRobot().getDriver().setServo("arm1", armtop);
+                    }
+                } else if (this.getGamepad().dpad_right) {
+                    adjusting = true;
+                    if (dir != 1 && !rpressed) {
+                        rpressed = true;
+                        point(Constants.DIRECTION_FORTYFIVE);
+                    }
+                    drive(0.2);
+                } else if (this.getGamepad().dpad_down) {
+                    if(!rpressed) {
+                        armbottom = !armbottom;
+                        rpressed = true;
+                        this.getRobot().getDriver().setServo("arm2", armbottom);
+                    }
+                } else {
+                    rpressed = false;
+                    if(adjusting) {
+                        adjusting = false;
+                        drive(0);
+                    }
+                }
 
                 // other mode
                 if(!isZero(y, 0.3)) {
@@ -208,14 +264,12 @@ public class DrivingTeleOpMode extends TeleOpMode {
             }
         }
 
+        // open or close arms
         if (this.getGamepad().right_bumper) {
             if (!pressed) {
                 pressed = true;
 
-                /*
-                 * NOTE:
-                 * When closing, give 0.25 space so it doesn't freak out
-                 */
+                // could optimize ik
                 if (holding) {
                     // open arms
                     armsOpen(true);
@@ -229,10 +283,11 @@ public class DrivingTeleOpMode extends TeleOpMode {
         } else
             pressed = false;
 
+        // move motor arm around
         if (this.getGamepad().left_trigger > Constants.TRIGGER_THRESHOLD) {
             this.getRobot().getMotorArm().setPower(-this.getGamepad().left_trigger / 2);
         } else if (this.getGamepad().right_trigger > Constants.TRIGGER_THRESHOLD) {
-            this.getRobot().getMotorArm().setPower(this.getGamepad().right_trigger);
+            this.getRobot().getMotorArm().setPower(this.getGamepad().right_trigger / 2);
         } else {
             this.getRobot().getMotorArm().setPower(0);
         }

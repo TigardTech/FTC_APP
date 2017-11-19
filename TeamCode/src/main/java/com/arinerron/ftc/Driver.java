@@ -93,16 +93,6 @@ public class Driver {
             this.getRobot().getServo4().setPosition(straight[3]);
     }
 
-    public void armsOpen(boolean yes) {
-        if(yes) {
-            this.getRobot().getServoArm1().setPosition(0.25);
-            this.getRobot().getServoArm2().setPosition(0.75);
-        } else {
-            this.getRobot().getServoArm1().setPosition(0.75);
-            this.getRobot().getServoArm2().setPosition(0.25);
-        }
-    }
-
     public static boolean isZero(double x) {
         return x < Constants.TRIGGER_THRESHOLD && x > -Constants.TRIGGER_THRESHOLD;
     }
@@ -117,11 +107,12 @@ public class Driver {
         return Math.toDegrees(1.5 * Math.PI - Math.atan2(y, x)) - 180; // supposed to be y,x
     }
 
-    private Double[] opened = new Double[] {0.8d, 0.4d};
-    private Double[] closed = new Double[] {0.4d, 1.0d};
+    private Double[] opened = new Double[] {1.0d, 0.4d, 1d};
+    private Double[] closed = new Double[] {0.4d, 1.0d, 0d};
 
     /* open: true = open, false = closed */
     public void setServo(String servo, boolean open) {
+
         double pos = 0.5;
         switch(servo.trim().toLowerCase()) {
             case "arm1":
@@ -142,9 +133,9 @@ public class Driver {
                 break;
             case "arme":
                 if(open)
-                    pos = opened[0];
+                    pos = opened[2];
                 else
-                    pos = closed[0];
+                    pos = closed[2];
                 this.getRobot().getServoArmE().setPosition(pos);
 
                 break;

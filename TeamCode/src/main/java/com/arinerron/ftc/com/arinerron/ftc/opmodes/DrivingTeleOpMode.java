@@ -150,7 +150,7 @@ public class DrivingTeleOpMode extends TeleOpMode {
 
         if(this.getRobot() != null) {
             // push out or pull in arms
-            if (this.getGamepad().a) {
+            if (this.getGamepad().b) {
                 if (!pressedl) {
                     pressedl = true;
 
@@ -170,7 +170,7 @@ public class DrivingTeleOpMode extends TeleOpMode {
             }
 
             // stop all motors if pressed
-            if(this.getGamepad().b) {
+            if(this.getGamepad().y) {
                 stop();
                 this.getRobot().getMotorArm().setPower(0);
             }
@@ -265,7 +265,7 @@ public class DrivingTeleOpMode extends TeleOpMode {
         }
 
         // open or close arms
-        if (this.getGamepad().right_bumper) {
+        if (this.getGamepad().a) {
             if (!pressed) {
                 pressed = true;
 

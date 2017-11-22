@@ -1,7 +1,13 @@
 package com.arinerron.ftc;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 public class Driver {
     private Robot robot = null;
+
+    public static final int STRAIGHT = 0;
+    public static final int ROTATE = -1;
+    public static final int NINETY = 1;
 
     public Driver(Robot robot) {
         this.robot = robot;
@@ -14,7 +20,7 @@ public class Driver {
     private int dir = 0;
 
     public void point(int direction) {
-        if(direction == 1) {
+        if(direction == NINETY) {
             /*
              * _   _
              *
@@ -25,7 +31,7 @@ public class Driver {
             this.getRobot().getServo2().setPosition(ninety[1]);
             this.getRobot().getServo3().setPosition(ninety[2]);
             this.getRobot().getServo4().setPosition(ninety[3]);
-        } else if(direction == -1) {
+        } else if(direction == ROTATE) {
             /*
              * /   \
              *
@@ -54,25 +60,31 @@ public class Driver {
 
     public void drive(double x) {
         /* dir: 0=straight, 1=ff, -1=90 */
-        if (dir == 1) {
+        if (dir == ROTATE) {
             // ff
             this.getRobot().getMotor1().setPower(x);
             this.getRobot().getMotor2().setPower(-x);
             this.getRobot().getMotor3().setPower(x);
             this.getRobot().getMotor4().setPower(-x);
-        } else if (dir == -1) {
+        } else if (dir == NINETY) {
             // ninety = invert some of these   l a t e r  ...
             this.getRobot().getMotor1().setPower(-x);
             this.getRobot().getMotor2().setPower(-x); // inverted
             this.getRobot().getMotor3().setPower(x); // inverted
             this.getRobot().getMotor4().setPower(x);
-        } else if (dir == 0) {
+        } else if (dir == STRAIGHT) {
             // straight
             this.getRobot().getMotor1().setPower(-x);
             this.getRobot().getMotor2().setPower(x); // inverted
             this.getRobot().getMotor3().setPower(x); // inverted
             this.getRobot().getMotor4().setPower(-x);
         }
+    }
+
+    public void drive(double x, double inches) {
+        int inches_per_tick = 1310;
+
+        double tics = (inches / CONSTANT) * 1310;
     }
 
     public void stop() {
@@ -101,10 +113,53 @@ public class Driver {
         return x < threshold && x > -threshold;
     }
 
+    public static final double CONSTANT = (4 * Math.PI);
+
     public static double getAngle(double x, double y) {
-        if(isZero(y) && isZero(y))
+        if(isZero(x) && isZero(y))
             return 0;
         return Math.toDegrees(1.5 * Math.PI - Math.atan2(y, x)) - 180; // supposed to be y,x
+    }
+
+    public void rotate(double degrees) {
+        ElapsedTime timer = new ElapsedTime();
+        while(timer.seconds() < 5 && this.getRobot().getGyroSensor().isCalibrating()); // max 5 secs for calibration.
+
+        this.getRobot().reset();
+
+        int olddir = -10;
+        // check if turned or not
+        if(this.dir != ROTATE) {
+            olddir = this.dir;
+            timer.reset();
+            this.point(ROTATE);
+            while(timer.seconds() < 1.5); // delay to wait for wheels to turn
+        }
+
+        // generate data
+        double heading = this.getRobot().getGyroSensor().getHeading();
+        double target = heading + degrees;
+        target = (double)((double)((double) (target % 360) + 360) + 360); // I don't even know...
+
+        if(degrees > 0) {
+            // rotate clockwise
+            this.drive(1);
+        } else {
+            // rotate counterclockwise
+            this.drive(-1);
+        }
+
+        int distance = Math.abs((int)(target - heading)); // calculate distance from target
+
+        timer.reset();
+        while(timer.seconds() < 10 && distance < 5) { // 5 is the threshold of angles
+            distance = Math.abs((int)(target - this.getRobot().getGyroSensor().getHeading())); // check if done rotating or not
+        }
+
+        // reset everything
+        this.getRobot().reset();
+        if(olddir != -10)
+            this.point(olddir);
     }
 
     private Double[] opened = new Double[] {1.0d, 0.4d, 1d};

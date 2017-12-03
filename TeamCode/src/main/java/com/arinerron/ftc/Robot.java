@@ -33,18 +33,22 @@ public class Robot {
         this.mode = mode;
 
         // create motor&servo instances
-        this.m1 = new Motor(this, this.getOpMode().getMotor(Constants.M1_MOTOR));
-        this.s1 = new Servo(this, this.getOpMode().getServo(Constants.S1_SERVO));
-        this.m2 = new Motor(this, this.getOpMode().getMotor(Constants.M2_MOTOR));
-        this.s2 = new Servo(this, this.getOpMode().getServo(Constants.S2_SERVO));
-        this.m3 = new Motor(this, this.getOpMode().getMotor(Constants.M3_MOTOR));
-        this.s3 = new Servo(this, this.getOpMode().getServo(Constants.S3_SERVO));
-        this.m4 = new Motor(this, this.getOpMode().getMotor(Constants.M4_MOTOR));
-        this.s4 = new Servo(this, this.getOpMode().getServo(Constants.S4_SERVO));
-        this.arm = new Motor(this, this.getOpMode().getMotor(Constants.ARM_MOTOR));
-        this.sa1 = new Servo(this, this.getOpMode().getServo(Constants.SA1_SERVO));
-        this.sa2 = new Servo(this, this.getOpMode().getServo(Constants.SA2_SERVO));
-        this.sae = new Servo(this, this.getOpMode().getServo(Constants.SAE_SERVO));
+        try {
+            this.m1 = new Motor(this, this.getOpMode().getMotor(Constants.M1_MOTOR));
+            this.s1 = new Servo(this, this.getOpMode().getServo(Constants.S1_SERVO));
+            this.m2 = new Motor(this, this.getOpMode().getMotor(Constants.M2_MOTOR));
+            this.s2 = new Servo(this, this.getOpMode().getServo(Constants.S2_SERVO));
+            this.m3 = new Motor(this, this.getOpMode().getMotor(Constants.M3_MOTOR));
+            this.s3 = new Servo(this, this.getOpMode().getServo(Constants.S3_SERVO));
+            this.m4 = new Motor(this, this.getOpMode().getMotor(Constants.M4_MOTOR));
+            this.s4 = new Servo(this, this.getOpMode().getServo(Constants.S4_SERVO));
+            this.arm = new Motor(this, this.getOpMode().getMotor(Constants.ARM_MOTOR));
+            this.sa1 = new Servo(this, this.getOpMode().getServo(Constants.SA1_SERVO));
+            this.sa2 = new Servo(this, this.getOpMode().getServo(Constants.SA2_SERVO));
+            this.sae = new Servo(this, this.getOpMode().getServo(Constants.SAE_SERVO));
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
 
         // enable/disable encoders on motors
         this.getMotor1().setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);

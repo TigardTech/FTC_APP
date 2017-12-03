@@ -6,9 +6,9 @@ import com.arinerron.ftc.Servo;
 import com.arinerron.ftc.TeleOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "Teleop", group = "TeleOp")
-public class DrivingTeleOpMode extends TeleOpMode {
-    public DrivingTeleOpMode() {
+@TeleOp(name = "TeleOp #2   ", group = "TeleOp")
+public class EncodersTest extends TeleOpMode {
+    public EncodersTest() {
         super();
 
         write("Driving OpMode initialized.");
@@ -19,6 +19,8 @@ public class DrivingTeleOpMode extends TeleOpMode {
         super.init();
 
         write("Preparing to run Driving OpMode...");
+        if(this.getRobot().getColorSensor() != null)
+            this.getRobot().getColorSensor().enableLed(true);
     }
 
     @Override
@@ -112,12 +114,18 @@ public class DrivingTeleOpMode extends TeleOpMode {
     }
 
     public void armsOpen(boolean yes) {
-        this.getRobot().getDriver().setServo("arm1", yes);
-        this.getRobot().getDriver().setServo("arm2", yes);
+        if(yes) {
+            this.getRobot().getServoArm1().setPosition(0);
+            this.getRobot().getServoArm2().setPosition(1);
+        } else {
+            this.getRobot().getServoArm1().setPosition(1);
+            this.getRobot().getServoArm2().setPosition(0);
+        }
     }
 
-    private boolean pressed = false, holding = false, mode = false, pressedl = false, holdingl = false, apressed = false, rpressed = false;
+    private boolean pressed = false, holding = false, mode = false, pressedl = false, holdingl = true, apressed = false, rpressed = false;
     private boolean armtop = true, armbottom = true;
+    private String color = "";
 
     @Override
     public void repeat() {
@@ -131,10 +139,15 @@ public class DrivingTeleOpMode extends TeleOpMode {
                 "Stick: (" + ((double)Math.round(x1 * 10d) / 10d) + ", " + ((double)Math.round(y1 * 10d) / 10d) + ") & (" + ((double)Math.round(x * 10d) / 10d) + ", " + ((double)Math.round(y * 10d) / 10d) + ")\n" +
                 "Motors: " + ((!isZero(this.getRobot().getMotor1().getPower()) || !isZero(this.getRobot().getMotor2().getPower()) || !isZero(this.getRobot().getMotor3().getPower()) || !isZero(this.getRobot().getMotor4().getPower())) ? "active" : "inactive") + "\n" +
                 "Arm: " + (holding ? "closed" : "opened") + "\n" +
-                "Direction: " + (dir == 0 ? "straight" : (dir == 1 ? "forty five" : "horizontal")), true);
+                "Direction: " + (dir == 0 ? "straight" : (dir == 1 ? "forty five" : "horizontal")) + "\n" +
+                "Color: " + (color.length() != 0 ? color.toUpperCase() : "N/A"), true);
 
         // make sure servos & motors aren't dying
         check();
+
+        // get colors
+        if(this.getRobot().getColorSensor() != null)
+            this.color = isColor(this.getRobot().getColorSensor().red(), this.getRobot().getColorSensor().green(), this.getRobot().getColorSensor().blue(), "red") ? "red" : (isColor(this.getRobot().getColorSensor().red(), this.getRobot().getColorSensor().green(), this.getRobot().getColorSensor().blue(), "blue") ? "blue" : "");
 
         // change modes from simple to advanced or vice versa
         if(this.getGamepad().x) {
@@ -204,28 +217,28 @@ public class DrivingTeleOpMode extends TeleOpMode {
                     if (dir != 1 && !rpressed) {
                         rpressed = true;
 
-                        pressed(false);
+                        point(Constants.DIRECTION_FORTYFIVE);
                     }
                     drive(-0.2);
                 } else if (this.getGamepad().dpad_up) {
                     if(!rpressed) {
                         armtop = !armtop;
                         rpressed = true;
-                        this.getRobot().getDriver().setServo("arm1", armtop);
+
                     }
                 } else if (this.getGamepad().dpad_right) {
                     adjusting = true;
                     if (dir != 1 && !rpressed) {
                         rpressed = true;
 
-                        pressed(true);
+                        point(Constants.DIRECTION_STRAIGHT);
                     }
                     drive(0.2);
                 } else if (this.getGamepad().dpad_down) {
                     if(!rpressed) {
                         armbottom = !armbottom;
                         rpressed = true;
-                        this.getRobot().getDriver().setServo("arm2", armbottom);
+
                     }
                 } else {
                     rpressed = false;
@@ -250,7 +263,7 @@ public class DrivingTeleOpMode extends TeleOpMode {
                         point(Constants.DIRECTION_NINETY);
                     }
 
-                    drive(x);
+                    drive(-x);
 
                 } else if(!isZero(x1)) {
                     // ff
@@ -267,7 +280,7 @@ public class DrivingTeleOpMode extends TeleOpMode {
         }
 
         // open or close arms
-        if (this.getGamepad().a) {
+        /*if (this.getGamepad().a) {
             if (!pressed) {
                 pressed = true;
 
@@ -283,7 +296,35 @@ public class DrivingTeleOpMode extends TeleOpMode {
                 }
             }
         } else
-            pressed = false;
+            pressed = false;*/
+
+        if(this.getGamepad().right_bumper) {
+            if(!pressed) {
+                this.pressed = true;
+                if(holding) {
+                    this.getRobot().getServoArm1().setPosition(0.5);
+                    this.getRobot().getServoArm2().setPosition(0.5);
+                    holding = false;
+                } else {
+                    armsOpen(true);
+                    holding = true;
+                }
+            }
+        } else if(this.getGamepad().left_bumper) {
+            if(!pressed) {
+                this.pressed = true;
+                if(holding) {
+                    this.getRobot().getServoArm1().setPosition(0.5);
+                    this.getRobot().getServoArm2().setPosition(0.5);
+                    holding = false;
+                } else {
+                    armsOpen(false);
+                    holding = true;
+                }
+            }
+        } else {
+            this.pressed = false;
+        }
 
         // move motor arm around
         if (this.getGamepad().left_trigger > Constants.TRIGGER_THRESHOLD) {

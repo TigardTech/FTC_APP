@@ -68,6 +68,56 @@ public class AutonomousMode extends OpMode {
 
         dir = direction;
     }
+    public void stop() {
+        this.getRobot().getMotor1().setPower(0);
+        this.getRobot().getMotor2().setPower(0);
+        this.getRobot().getMotor3().setPower(0);
+        this.getRobot().getMotor4().setPower(0);
+    }
+
+    public void check() {
+        if(this.getRobot().getServo1() != null && Double.isNaN(this.getRobot().getServo1().getPosition()))
+            this.getRobot().getServo1().setPosition(straight[0]);
+        if(this.getRobot().getServo2() != null && Double.isNaN(this.getRobot().getServo2().getPosition()))
+            this.getRobot().getServo2().setPosition(straight[1]);
+        if(this.getRobot().getServo3() != null && Double.isNaN(this.getRobot().getServo3().getPosition()))
+            this.getRobot().getServo3().setPosition(straight[2]);
+        if(this.getRobot().getServo4() != null && Double.isNaN(this.getRobot().getServo4().getPosition()))
+            this.getRobot().getServo4().setPosition(straight[3]);
+    }
+
+    public void armsOpen(boolean yes) {
+        if(yes) {
+            this.getRobot().getServoArm1().setPosition(0);
+            this.getRobot().getServoArm2().setPosition(1);
+        } else {
+            this.getRobot().getServoArm1().setPosition(1);
+            this.getRobot().getServoArm2().setPosition(0);
+        }
+    }
+
+    private boolean pressed = false, holding = false, mode = true, apressed = false;
+
+    private ElapsedTime timer = new ElapsedTime();
+
+    @Override
+    public void run() {
+        write("OpMode running...");
+
+        // drive to the safe zone for points
+        point(Constants.DIRECTION_STRAIGHT);
+        drive(1);
+        this.waitr(1.25);
+        stop();
+        armsOpen(false);
+        this.waitr(2);
+        this.getRobot().getServoArm1().setPosition(0.5);
+        this.getRobot().getServoArm2().setPosition(0.5);
+        drive(-1);
+        this.waitr(0.25);
+        stop();
+
+    }
 
     public void drive(double x) {
         /* dir: 0=straight, 1=ff, -1=90 */
@@ -91,58 +141,6 @@ public class AutonomousMode extends OpMode {
             this.getRobot().getMotor4().setPower(-x);
         }
     }
-
-    public void stop() {
-        this.getRobot().getMotor1().setPower(0);
-        this.getRobot().getMotor2().setPower(0);
-        this.getRobot().getMotor3().setPower(0);
-        this.getRobot().getMotor4().setPower(0);
-    }
-
-    public void check() {
-        if(this.getRobot().getServo1() != null && Double.isNaN(this.getRobot().getServo1().getPosition()))
-            this.getRobot().getServo1().setPosition(straight[0]);
-        if(this.getRobot().getServo2() != null && Double.isNaN(this.getRobot().getServo2().getPosition()))
-            this.getRobot().getServo2().setPosition(straight[1]);
-        if(this.getRobot().getServo3() != null && Double.isNaN(this.getRobot().getServo3().getPosition()))
-            this.getRobot().getServo3().setPosition(straight[2]);
-        if(this.getRobot().getServo4() != null && Double.isNaN(this.getRobot().getServo4().getPosition()))
-            this.getRobot().getServo4().setPosition(straight[3]);
-    }
-
-    public void armsOpen(boolean yes) {
-        if(yes) {
-            this.getRobot().getServoArm1().setPosition(0.25);
-            this.getRobot().getServoArm2().setPosition(0.75);
-        } else {
-            this.getRobot().getServoArm1().setPosition(0.75);
-            this.getRobot().getServoArm2().setPosition(0.25);
-        }
-    }
-
-    private boolean pressed = false, holding = false, mode = true, apressed = false;
-
-    private ElapsedTime timer = new ElapsedTime();
-
-    @Override
-    public void run() {
-        write("OpMode running...");
-
-        // open claws
-        this.getRobot().getDriver().setServo("arm1", true);
-        this.getRobot().getDriver().setServo("arm2", true);
-
-        // drive to the safe zone for points
-        point(Constants.DIRECTION_STRAIGHT);
-        this.getRobot().getMotor1().setPower(-1);
-        this.getRobot().getMotor2().setPower(1);
-        this.getRobot().getMotor3().setPower(1);
-        this.getRobot().getMotor4().setPower(-1);
-        this.waitr(1.25);
-        stop();
-    }
-
-
 
     private void waitr(double seconds) {
         timer.reset();

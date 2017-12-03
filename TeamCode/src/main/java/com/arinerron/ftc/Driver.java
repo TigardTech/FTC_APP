@@ -84,7 +84,32 @@ public class Driver {
     public void drive(double x, double inches) {
         int inches_per_tick = 1310;
 
+        ElapsedTime timer = new ElapsedTime();
+
         double tics = (inches / CONSTANT) * 1310;
+        double curTics1 = 0;
+        double endTics1 = 0;
+        double curTics2 = 0;
+        double endTics3 = 0;
+
+        // stop everything
+        this.getRobot().reset();
+
+        curTics1 = this.getRobot().getMotor1().getDcMotor().getCurrentPosition();
+        curTics2 = this.getRobot().getMotor3().getDcMotor().getCurrentPosition();
+
+        if(x < 0) {
+
+        } else {
+
+        }
+
+        timer.reset();
+        if(x > 0) {
+            while((curTics1 < endTics1) && (timer.seconds() < 10));
+        } else {
+
+        }
     }
 
     public void stop() {

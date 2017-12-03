@@ -104,4 +104,36 @@ public abstract class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpM
     public GyroSensor getGyroSensor(String name) {
         return this.getHardwareMap().gyroSensor.get(name);
     }
+
+    public boolean isColor(double r, double g, double b, String name) {
+        name = name.toLowerCase(); // get the lower case version of the name
+
+        switch(name) {
+            case "red":
+                if(r >= Constants.COLOR_THRESHOLD)
+                    return true; // it is red
+                break;
+            case "green":
+                if(g >= Constants.COLOR_THRESHOLD)
+                    return true; // it is green
+                break;
+            case "blue":
+                if(b >= Constants.COLOR_THRESHOLD)
+                    return true; // it is blue
+                break;
+            case "white":
+                if(r > Constants.COLOR_THRESHOLD && g > Constants.COLOR_THRESHOLD && b > Constants.COLOR_THRESHOLD)
+                    return true;
+                break;
+            case "black":
+                if(r < Constants.COLOR_THRESHOLD && g < Constants.COLOR_THRESHOLD && b < Constants.COLOR_THRESHOLD)
+                    return true;
+                break;
+            default:
+                // status("Unknown color (" + r + ", " + g + ", " + b + ")."); // unknown color; will get annoying if it is spamming console.
+                return false;
+        }
+
+        return false; // unknown color
+    }
 }

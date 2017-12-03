@@ -6,6 +6,10 @@ public class ContinuousServo extends Servo {
         super(robot, servo);
     }
 
+    public double getCenter() {
+        return 0.5;
+    }
+
     /* rotate clockwise */
     public void right() {
         this.setPosition(1);

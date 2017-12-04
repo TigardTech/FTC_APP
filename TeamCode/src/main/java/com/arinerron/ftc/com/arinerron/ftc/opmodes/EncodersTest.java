@@ -1,7 +1,9 @@
 package com.arinerron.ftc.com.arinerron.ftc.opmodes;
 
 import com.arinerron.ftc.Constants;
+import com.arinerron.ftc.Direction;
 import com.arinerron.ftc.Motor;
+import com.arinerron.ftc.Position;
 import com.arinerron.ftc.Servo;
 import com.arinerron.ftc.TeleOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -10,17 +12,16 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class EncodersTest extends TeleOpMode {
     public EncodersTest() {
         super();
-
-        write("Driving OpMode initialized.");
     }
 
     @Override
     public void init() {
         super.init();
 
-        write("Preparing to run Driving OpMode...");
         if(this.getRobot().getColorSensor() != null)
             this.getRobot().getColorSensor().enableLed(true);
+
+        write("Driving OpMode initialized.");
     }
 
     @Override
@@ -31,10 +32,10 @@ public class EncodersTest extends TeleOpMode {
     private boolean left = false, right = false, up = false, down = false;
 
     private final double[] straight /*0*/ = {1, 0.2, 0.7, 0.3}, ff /*1*/ = {0.6, 0.6, 0.3, 0.6}, ninety /*-1*/ = {0.3, 0.9, 0, 1};
-    private int dir = 0;
+    private Direction dir = Direction.STRAIGHT;
 
-    public void point(int direction) {
-        if(direction == 1) {
+    public void point(Direction direction) {
+        if(direction == Direction.NINETY) {
             /*
              * _   _
              *
@@ -45,7 +46,7 @@ public class EncodersTest extends TeleOpMode {
             this.getRobot().getServo2().setPosition(ninety[1]);
             this.getRobot().getServo3().setPosition(ninety[2]);
             this.getRobot().getServo4().setPosition(ninety[3]);
-        } else if(direction == -1) {
+        } else if(direction == Direction.FORTYFIVE) {
             /*
              * /   \
              *
@@ -74,19 +75,19 @@ public class EncodersTest extends TeleOpMode {
 
     public void drive(double x) {
         /* dir: 0=straight, 1=ff, -1=90 */
-        if (dir == 1) {
+        if (dir == Direction.FORTYFIVE) {
             // ff
             this.getRobot().getMotor1().setPower(x);
             this.getRobot().getMotor2().setPower(-x);
             this.getRobot().getMotor3().setPower(x);
             this.getRobot().getMotor4().setPower(-x);
-        } else if (dir == -1) {
+        } else if (dir == Direction.NINETY) {
             // ninety = invert some of these   l a t e r  ...
             this.getRobot().getMotor1().setPower(-x);
             this.getRobot().getMotor2().setPower(-x); // inverted
             this.getRobot().getMotor3().setPower(x); // inverted
             this.getRobot().getMotor4().setPower(x);
-        } else if (dir == 0) {
+        } else if (dir == Direction.STRAIGHT) {
             // straight
             this.getRobot().getMotor1().setPower(-x);
             this.getRobot().getMotor2().setPower(x); // inverted
@@ -100,6 +101,8 @@ public class EncodersTest extends TeleOpMode {
         this.getRobot().getMotor2().setPower(0);
         this.getRobot().getMotor3().setPower(0);
         this.getRobot().getMotor4().setPower(0);
+        this.getRobot().getServoArm1().setPosition(0.5);
+        this.getRobot().getServoArm2().setPosition(0.5);
     }
 
     public void check() {
@@ -113,17 +116,8 @@ public class EncodersTest extends TeleOpMode {
             this.getRobot().getServo4().setPosition(straight[3]);
     }
 
-    public void armsOpen(boolean yes) {
-        if(yes) {
-            this.getRobot().getServoArm1().setPosition(0);
-            this.getRobot().getServoArm2().setPosition(1);
-        } else {
-            this.getRobot().getServoArm1().setPosition(1);
-            this.getRobot().getServoArm2().setPosition(0);
-        }
-    }
-
     private boolean pressed = false, holding = false, mode = false, pressedl = false, holdingl = true, apressed = false, rpressed = false;
+    private Position armpos = Position.STOPPED;
     private boolean armtop = true, armbottom = true;
     private String color = "";
 
@@ -138,9 +132,9 @@ public class EncodersTest extends TeleOpMode {
         this.write("\nMode: " + (mode ? "advanced" : "simple") + "\n" +
                 "Stick: (" + ((double)Math.round(x1 * 10d) / 10d) + ", " + ((double)Math.round(y1 * 10d) / 10d) + ") & (" + ((double)Math.round(x * 10d) / 10d) + ", " + ((double)Math.round(y * 10d) / 10d) + ")\n" +
                 "Motors: " + ((!isZero(this.getRobot().getMotor1().getPower()) || !isZero(this.getRobot().getMotor2().getPower()) || !isZero(this.getRobot().getMotor3().getPower()) || !isZero(this.getRobot().getMotor4().getPower())) ? "active" : "inactive") + "\n" +
-                "Arm: " + (holding ? "closed" : "opened") + "\n" +
-                "Direction: " + (dir == 0 ? "straight" : (dir == 1 ? "forty five" : "horizontal")) + "\n" +
-                "Color: " + (color.length() != 0 ? color.toUpperCase() : "N/A"), true);
+                "Arm: " + (armpos == Position.IN ? "pulling in" : (armpos == Position.OUT ? "pushing out" : "inactive")) + "\n" +
+                "Direction: " + (dir == Direction.STRAIGHT ? "straight" : (dir == Direction.FORTYFIVE ? "forty five" : "horizontal")) + "\n" +
+                "Color: " + (color.length() != 0 ? color.toLowerCase() : "N/A"), true);
 
         // make sure servos & motors aren't dying
         check();
@@ -159,6 +153,10 @@ public class EncodersTest extends TeleOpMode {
             }
 
             apressed = false;
+        }
+
+        if(this.getGamepad().a) {
+            this.point(dir);
         }
 
         if(this.getRobot() != null) {
@@ -185,18 +183,19 @@ public class EncodersTest extends TeleOpMode {
             // stop all motors if pressed
             if(this.getGamepad().y) {
                 stop();
+                this.setClaw(Position.STOPPED);
                 this.getRobot().getMotorArm().setPower(0);
             }
 
             if(mode) {
                 if (this.getGamepad().dpad_left) {
-                    point(Constants.DIRECTION_NINETY); // previously known as "90"
+                    point(Direction.NINETY);
                 } else if (this.getGamepad().dpad_up) {
                     this.getRobot().reset();
                 } else if (this.getGamepad().dpad_right) {
-                    point(Constants.DIRECTION_FORTYFIVE);
+                    point(Direction.FORTYFIVE);
                 } else if (this.getGamepad().dpad_down) {
-                    point(Constants.DIRECTION_STRAIGHT);
+                    point(Direction.STRAIGHT);
                 }
 
                 if (!isZero(y)) {
@@ -214,24 +213,23 @@ public class EncodersTest extends TeleOpMode {
                 // arm stuff and small adjustment stuff
                 if (this.getGamepad().dpad_left) {
                     adjusting = true;
-                    if (dir != 1 && !rpressed) {
+                    if (dir != Direction.FORTYFIVE && !rpressed) {
                         rpressed = true;
 
-                        point(Constants.DIRECTION_FORTYFIVE);
+                        point(Direction.FORTYFIVE);
                     }
                     drive(-0.2);
                 } else if (this.getGamepad().dpad_up) {
                     if(!rpressed) {
                         armtop = !armtop;
                         rpressed = true;
-
                     }
                 } else if (this.getGamepad().dpad_right) {
                     adjusting = true;
-                    if (dir != 1 && !rpressed) {
+                    if (dir != Direction.STRAIGHT && !rpressed) {
                         rpressed = true;
 
-                        point(Constants.DIRECTION_STRAIGHT);
+                        point(Direction.STRAIGHT);
                     }
                     drive(0.2);
                 } else if (this.getGamepad().dpad_down) {
@@ -251,24 +249,24 @@ public class EncodersTest extends TeleOpMode {
                 // other mode
                 if(!isZero(y, 0.3)) {
                     // straight
-                    if(dir != 0) {
-                        point(Constants.DIRECTION_STRAIGHT);
+                    if(dir != Direction.STRAIGHT) {
+                        point(Direction.STRAIGHT);
                     }
 
                     drive(y);
 
                 } else if(!isZero(x, 0.3)) {
                     // 90
-                    if(dir != -1) {
-                        point(Constants.DIRECTION_NINETY);
+                    if(dir != Direction.NINETY) {
+                        point(Direction.NINETY);
                     }
 
                     drive(-x);
 
                 } else if(!isZero(x1)) {
                     // ff
-                    if (dir != 1) {
-                        point(Constants.DIRECTION_FORTYFIVE);
+                    if (dir != Direction.FORTYFIVE) {
+                        point(Direction.FORTYFIVE);
                     }
 
                     drive(x1);
@@ -279,34 +277,14 @@ public class EncodersTest extends TeleOpMode {
             }
         }
 
-        // open or close arms
-        /*if (this.getGamepad().a) {
-            if (!pressed) {
-                pressed = true;
-
-                // could optimize ik
-                if (holding) {
-                    // open arms
-                    armsOpen(true);
-                    holding = false;
-                } else {
-                    // close arms
-                    armsOpen(false);
-                    holding = true;
-                }
-            }
-        } else
-            pressed = false;*/
-
         if(this.getGamepad().right_bumper) {
             if(!pressed) {
                 this.pressed = true;
                 if(holding) {
-                    this.getRobot().getServoArm1().setPosition(0.5);
-                    this.getRobot().getServoArm2().setPosition(0.5);
+                    setClaw(Position.STOPPED);
                     holding = false;
                 } else {
-                    armsOpen(true);
+                    setClaw(Position.IN);
                     holding = true;
                 }
             }
@@ -314,11 +292,10 @@ public class EncodersTest extends TeleOpMode {
             if(!pressed) {
                 this.pressed = true;
                 if(holding) {
-                    this.getRobot().getServoArm1().setPosition(0.5);
-                    this.getRobot().getServoArm2().setPosition(0.5);
+                    setClaw(Position.STOPPED);
                     holding = false;
                 } else {
-                    armsOpen(false);
+                    setClaw(Position.OUT);
                     holding = true;
                 }
             }
@@ -336,8 +313,22 @@ public class EncodersTest extends TeleOpMode {
         }
     }
 
-    public void pressed(boolean right) {
+    public void setClaw(Position pos) {
+        if(pos == Position.IN) {
+            // pull in
+            this.getRobot().getServoArm1().setPosition(0);
+            this.getRobot().getServoArm2().setPosition(1);
+        } else if(pos == Position.OUT) {
+            // push out
+            this.getRobot().getServoArm1().setPosition(1);
+            this.getRobot().getServoArm2().setPosition(0);
+        } else {
+            // stop servos
+            this.getRobot().getServoArm1().setPosition(0.5);
+            this.getRobot().getServoArm2().setPosition(0.5);
+        }
 
+        this.armpos = pos;
     }
 
     public static boolean isZero(double x) {

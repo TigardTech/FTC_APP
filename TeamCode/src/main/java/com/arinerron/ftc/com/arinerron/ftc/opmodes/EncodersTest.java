@@ -134,7 +134,8 @@ public class EncodersTest extends TeleOpMode {
                 "Motors: " + ((!isZero(this.getRobot().getMotor1().getPower()) || !isZero(this.getRobot().getMotor2().getPower()) || !isZero(this.getRobot().getMotor3().getPower()) || !isZero(this.getRobot().getMotor4().getPower())) ? "active" : "inactive") + "\n" +
                 "Arm: " + (armpos == Position.IN ? "pulling in" : (armpos == Position.OUT ? "pushing out" : "inactive")) + "\n" +
                 "Direction: " + (dir == Direction.STRAIGHT ? "straight" : (dir == Direction.FORTYFIVE ? "forty five" : "horizontal")) + "\n" +
-                "Color: " + (color.length() != 0 ? color.toLowerCase() : "N/A"), true);
+                "Color: " + (color.length() != 0 ? color.toLowerCase() : "N/A") + "\n" +
+                "Encoders: 1=" + this.getRobot().getMotor1().getDcMotor().getCurrentPosition() + " 2=" + this.getRobot().getMotor2().getDcMotor().getCurrentPosition() + "3=" + this.getRobot().getMotor3().getDcMotor().getCurrentPosition() + "4=" + this.getRobot().getMotor4().getDcMotor().getCurrentPosition(), true);
 
         // make sure servos & motors aren't dying
         check();

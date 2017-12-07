@@ -136,4 +136,138 @@ public abstract class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpM
 
         return false; // unknown color
     }
+
+    private final double[] straight /*0*/ = {1, 0.2, 0.7, 0.3}, ff /*1*/ = {0.6, 0.6, 0.3, 0.6}, ninety /*-1*/ = {0.3, 0.9, 0, 1};
+    public Direction dir = Direction.STRAIGHT;
+
+    public void check() {
+        if(this.getRobot().getServo1() != null && Double.isNaN(this.getRobot().getServo1().getPosition()))
+            this.getRobot().getServo1().setPosition(straight[0]);
+        if(this.getRobot().getServo2() != null && Double.isNaN(this.getRobot().getServo2().getPosition()))
+            this.getRobot().getServo2().setPosition(straight[1]);
+        if(this.getRobot().getServo3() != null && Double.isNaN(this.getRobot().getServo3().getPosition()))
+            this.getRobot().getServo3().setPosition(straight[2]);
+        if(this.getRobot().getServo4() != null && Double.isNaN(this.getRobot().getServo4().getPosition()))
+            this.getRobot().getServo4().setPosition(straight[3]);
+    }
+
+    public void point(Direction direction) {
+        if(direction == Direction.NINETY) {
+            /*
+             * _   _
+             *
+             * _   _
+             *
+             */
+            this.getRobot().getServo1().setPosition(ninety[0]);
+            this.getRobot().getServo2().setPosition(ninety[1]);
+            this.getRobot().getServo3().setPosition(ninety[2]);
+            this.getRobot().getServo4().setPosition(ninety[3]);
+        } else if(direction == Direction.FORTYFIVE) {
+            /*
+             * /   \
+             *
+             * \   /
+             *
+             */
+            this.getRobot().getServo1().setPosition(ff[0]);
+            this.getRobot().getServo2().setPosition(ff[1]);
+            this.getRobot().getServo3().setPosition(ff[2]);
+            this.getRobot().getServo4().setPosition(ff[3]);
+        } else {
+            /*
+             * |   |
+             *
+             * |   |
+             *
+             */
+            this.getRobot().getServo1().setPosition(straight[0]);
+            this.getRobot().getServo2().setPosition(straight[1]);
+            this.getRobot().getServo3().setPosition(straight[2]);
+            this.getRobot().getServo4().setPosition(straight[3]);
+        }
+
+        dir = direction;
+    }
+
+    public void drive(double x) {
+        /* dir: 0=straight, 1=ff, -1=90 */
+        if (dir == Direction.FORTYFIVE) {
+            // ff
+            this.getRobot().getMotor1().setPower(-x); // i
+            this.getRobot().getMotor2().setPower(-x);
+            this.getRobot().getMotor3().setPower(x);
+            this.getRobot().getMotor4().setPower(x); // i
+        } else if (dir == Direction.NINETY) {
+            // ninety = invert some of these   l a t e r  ...
+            this.getRobot().getMotor1().setPower(x);
+            this.getRobot().getMotor2().setPower(-x); // inverted i
+            this.getRobot().getMotor3().setPower(x); // inverted i
+            this.getRobot().getMotor4().setPower(-x);
+        } else if (dir == Direction.STRAIGHT) {
+            // straight
+            this.getRobot().getMotor1().setPower(-x);
+            this.getRobot().getMotor2().setPower(x); // inverted
+            this.getRobot().getMotor3().setPower(x); // inverted
+            this.getRobot().getMotor4().setPower(-x);
+        }
+    }
+
+    public boolean driveInches(double inches) {
+        double inchespertick = 136.5;//128.97;
+
+        double distance = inches * inchespertick;
+
+        //double motor1 = this.getRobot().getMotor1().getDcMotor().getCurrentPosition();
+        double motor2 = this.getRobot().getMotor2().getDcMotor().getCurrentPosition();
+        double motor3 = this.getRobot().getMotor3().getDcMotor().getCurrentPosition();
+        //double motor4 = this.getRobot().getMotor4().getDcMotor().getCurrentPosition();
+
+        //motor1 = motor1 + distance; // - it's all good
+        motor2 = motor2 - distance; // +
+        motor3 = motor3 + distance; // +
+        //motor4 = motor4 - distance; // -
+
+        ElapsedTime timer = new ElapsedTime();
+        timer.reset();
+
+        boolean conditionssatisfied = false;
+
+        double multiplier = (double)(int)(distance > 0 ? 1 : -1);
+
+        this.getRobot().reset();
+        drive(0.5 * multiplier); // half speed
+
+        while(timer.seconds() < 10 && !conditionssatisfied) { // 10 sec timeout
+            int conditions = 0;
+
+            /*if(this.getRobot().getMotor1().getDcMotor().getCurrentPosition() >= motor1) { // it's all good
+                this.getRobot().getMotor1().reset();
+                conditions++;
+            }*/
+
+            if(this.getRobot().getMotor2().getDcMotor().getCurrentPosition() <= motor2) {
+                this.getRobot().getMotor2().reset();
+                conditions++;
+            }
+
+            if(this.getRobot().getMotor3().getDcMotor().getCurrentPosition() >= motor3) {
+                this.getRobot().getMotor3().reset();
+                conditions++;
+            }
+
+            /*if(this.getRobot().getMotor4().getDcMotor().getCurrentPosition() <= motor4) {
+                this.getRobot().getMotor4().reset();
+                conditions++;
+            }*/
+
+            if(conditions >= /*4*/2) {
+                conditionssatisfied = true;
+            }
+        }
+
+        this.getRobot().reset();
+
+        return conditionssatisfied;
+    }
 }

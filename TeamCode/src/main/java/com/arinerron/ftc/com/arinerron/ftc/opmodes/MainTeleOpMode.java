@@ -1,14 +1,14 @@
 package com.arinerron.ftc.com.arinerron.ftc.opmodes;
 
 import com.arinerron.ftc.Constants;
+import com.arinerron.ftc.Direction;
 import com.arinerron.ftc.Motor;
 import com.arinerron.ftc.Servo;
 import com.arinerron.ftc.TeleOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-//@TeleOp(name = "ServoTest", group = "TeleOp")
-@Disabled
+@TeleOp(name = "ServoTest", group = "TeleOp")
 public class MainTeleOpMode extends TeleOpMode {
     public MainTeleOpMode() {
         super();
@@ -40,21 +40,20 @@ public class MainTeleOpMode extends TeleOpMode {
         this.write("debug", "(" + x + ", " + y + "): " + ((double) ((int) ((double) getAngle(x, y) * 100)) / (double) 100) + " degrees");
 
         if(serv != null && Double.isNaN(serv.getPosition()))
-            serv.setPosition(0);
+            this.point(Direction.STRAIGHT);
 
 
 
         if(this.getRobot() != null) {
             if(this.getGamepad().y) {
                 mot.reset();
-                this.getRobot().getMotor1().reset();
-                this.getRobot().getMotor2().reset();
-                this.getRobot().getMotor3().reset();
-                this.getRobot().getMotor4().reset();
+                this.point(Direction.STRAIGHT);
             }
 
-            if(mot != null)
-                write("servo" + serv.getPosition() + "    &    center: " + serv.getCenter() + " and motor:" + mot.getPower());
+            if(mot != null) {
+                mot.setPower(y);
+                write("motor:" + mot.getPower());
+            }
 
             if (this.getGamepad().dpad_left) {
                 serv = this.getRobot().getServo1();

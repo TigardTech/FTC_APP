@@ -22,10 +22,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
+import static org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark.*;
+import static org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark.LEFT;
+
 public class Identifier {
     private OpMode mode = null;
-    private List<EventListener> events = new ArrayList<>();
+    // private List<EventListener> events = new ArrayList<>();
     private boolean running = false;
+
+    private Cipher cipher = Cipher.UNKNOWN;
 
     private OpenGLMatrix lastLocation = null;
     private VuforiaLocalizer vuforia = null;
@@ -36,7 +41,11 @@ public class Identifier {
         this.hardwareMap = this.getOpMode().getHardwareMap();
     }
 
-    public boolean start() {
+    public Cipher getCipher() {
+        return this.cipher;
+    }
+
+    private boolean run() {
         if(!this.isRunning()) {
             int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
             VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
@@ -52,11 +61,26 @@ public class Identifier {
             relicTrackables.activate();
 
             while(this.isRunning()) {
-                RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-                if (vuMark != RelicRecoveryVuMark.UNKNOWN)
+                RelicRecoveryVuMark vuMark = from(relicTemplate);
+                /*if (vuMark != UNKNOWN)
                     for(EventListener event : this.getEventListeners()) { // potential ConcurrentModificationException? Oh well.
                         event.onEvent(new Data(vuMark));
-                    }
+                    }*/
+
+                switch(vuMark) {
+                    case UNKNOWN:
+                        this.cipher = Cipher.UNKNOWN;
+                        break;
+                    case LEFT:
+                        this.cipher = Cipher.LEFT;
+                        break;
+                    case RIGHT:
+                        this.cipher = Cipher.RIGHT;
+                        break;
+                    case CENTER:
+                        this.cipher = Cipher.CENTER;
+                        break;
+                }
             }
 
             relicTrackables.deactivate();
@@ -65,6 +89,15 @@ public class Identifier {
         }
 
         return false;
+
+    }
+
+    public boolean start() {
+        new Thread(new Runnable() {public void run() {
+            Identifier.this.run();
+        }}).start();
+
+        return true;
     }
 
     public boolean stop() {
@@ -76,7 +109,7 @@ public class Identifier {
     public boolean isRunning() {
         return this.running;
     }
-
+/*
     public void addEventListener(EventListener event) {
         this.getEventListeners().add(event);
     }
@@ -84,7 +117,7 @@ public class Identifier {
     public List<EventListener> getEventListeners() {
         return this.events;
     }
-
+*/
     public OpMode getOpMode() {
         return this.mode;
     }

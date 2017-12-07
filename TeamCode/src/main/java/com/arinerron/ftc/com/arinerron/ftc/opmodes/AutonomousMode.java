@@ -86,16 +86,6 @@ public class AutonomousMode extends OpMode {
             this.getRobot().getServo4().setPosition(straight[3]);
     }
 
-    public void armsOpen(boolean yes) {
-        if(yes) {
-            this.getRobot().getServoArm1().setPosition(0);
-            this.getRobot().getServoArm2().setPosition(1);
-        } else {
-            this.getRobot().getServoArm1().setPosition(1);
-            this.getRobot().getServoArm2().setPosition(0);
-        }
-    }
-
     private boolean pressed = false, holding = false, mode = true, apressed = false;
 
     private ElapsedTime timer = new ElapsedTime();
@@ -109,7 +99,7 @@ public class AutonomousMode extends OpMode {
         drive(1);
         this.waitr(1.25);
         stop();
-        armsOpen(false);
+        //armsOpen(false);
         this.waitr(2);
         this.getRobot().getServoArm1().setPosition(0.5);
         this.getRobot().getServoArm2().setPosition(0.5);

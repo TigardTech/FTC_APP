@@ -7,6 +7,7 @@ import com.arinerron.ftc.Position;
 import com.arinerron.ftc.Servo;
 import com.arinerron.ftc.TeleOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name = "TeleOp #2   ", group = "TeleOp")
 public class EncodersTest extends TeleOpMode {
@@ -31,89 +32,12 @@ public class EncodersTest extends TeleOpMode {
 
     private boolean left = false, right = false, up = false, down = false;
 
-    private final double[] straight /*0*/ = {1, 0.2, 0.7, 0.3}, ff /*1*/ = {0.6, 0.6, 0.3, 0.6}, ninety /*-1*/ = {0.3, 0.9, 0, 1};
-    private Direction dir = Direction.STRAIGHT;
-
-    public void point(Direction direction) {
-        if(direction == Direction.NINETY) {
-            /*
-             * _   _
-             *
-             * _   _
-             *
-             */
-            this.getRobot().getServo1().setPosition(ninety[0]);
-            this.getRobot().getServo2().setPosition(ninety[1]);
-            this.getRobot().getServo3().setPosition(ninety[2]);
-            this.getRobot().getServo4().setPosition(ninety[3]);
-        } else if(direction == Direction.FORTYFIVE) {
-            /*
-             * /   \
-             *
-             * \   /
-             *
-             */
-            this.getRobot().getServo1().setPosition(ff[0]);
-            this.getRobot().getServo2().setPosition(ff[1]);
-            this.getRobot().getServo3().setPosition(ff[2]);
-            this.getRobot().getServo4().setPosition(ff[3]);
-        } else {
-            /*
-             * |   |
-             *
-             * |   |
-             *
-             */
-            this.getRobot().getServo1().setPosition(straight[0]);
-            this.getRobot().getServo2().setPosition(straight[1]);
-            this.getRobot().getServo3().setPosition(straight[2]);
-            this.getRobot().getServo4().setPosition(straight[3]);
-        }
-
-        dir = direction;
-    }
-
-    public void drive(double x) {
-        /* dir: 0=straight, 1=ff, -1=90 */
-        if (dir == Direction.FORTYFIVE) {
-            // ff
-            this.getRobot().getMotor1().setPower(x);
-            this.getRobot().getMotor2().setPower(-x);
-            this.getRobot().getMotor3().setPower(x);
-            this.getRobot().getMotor4().setPower(-x);
-        } else if (dir == Direction.NINETY) {
-            // ninety = invert some of these   l a t e r  ...
-            this.getRobot().getMotor1().setPower(-x);
-            this.getRobot().getMotor2().setPower(-x); // inverted
-            this.getRobot().getMotor3().setPower(x); // inverted
-            this.getRobot().getMotor4().setPower(x);
-        } else if (dir == Direction.STRAIGHT) {
-            // straight
-            this.getRobot().getMotor1().setPower(-x);
-            this.getRobot().getMotor2().setPower(x); // inverted
-            this.getRobot().getMotor3().setPower(x); // inverted
-            this.getRobot().getMotor4().setPower(-x);
-        }
-    }
 
     public void stop() {
         this.getRobot().getMotor1().setPower(0);
         this.getRobot().getMotor2().setPower(0);
         this.getRobot().getMotor3().setPower(0);
         this.getRobot().getMotor4().setPower(0);
-        this.getRobot().getServoArm1().setPosition(0.5);
-        this.getRobot().getServoArm2().setPosition(0.5);
-    }
-
-    public void check() {
-        if(this.getRobot().getServo1() != null && Double.isNaN(this.getRobot().getServo1().getPosition()))
-            this.getRobot().getServo1().setPosition(straight[0]);
-        if(this.getRobot().getServo2() != null && Double.isNaN(this.getRobot().getServo2().getPosition()))
-            this.getRobot().getServo2().setPosition(straight[1]);
-        if(this.getRobot().getServo3() != null && Double.isNaN(this.getRobot().getServo3().getPosition()))
-            this.getRobot().getServo3().setPosition(straight[2]);
-        if(this.getRobot().getServo4() != null && Double.isNaN(this.getRobot().getServo4().getPosition()))
-            this.getRobot().getServo4().setPosition(straight[3]);
     }
 
     private boolean pressed = false, holding = false, mode = false, pressedl = false, holdingl = true, apressed = false, rpressed = false;
@@ -135,10 +59,11 @@ public class EncodersTest extends TeleOpMode {
                 "Arm: " + (armpos == Position.IN ? "pulling in" : (armpos == Position.OUT ? "pushing out" : "inactive")) + "\n" +
                 "Direction: " + (dir == Direction.STRAIGHT ? "straight" : (dir == Direction.FORTYFIVE ? "forty five" : "horizontal")) + "\n" +
                 "Color: " + (color.length() != 0 ? color.toLowerCase() : "N/A") + "\n" +
-                "Encoders: 1=" + this.getRobot().getMotor1().getDcMotor().getCurrentPosition() + " 2=" + this.getRobot().getMotor2().getDcMotor().getCurrentPosition() + "3=" + this.getRobot().getMotor3().getDcMotor().getCurrentPosition() + "4=" + this.getRobot().getMotor4().getDcMotor().getCurrentPosition(), true);
+                "Encoders: 1=" + this.getRobot().getMotor1().getDcMotor().getCurrentPosition() + " 2=" + this.getRobot().getMotor2().getDcMotor().getCurrentPosition() + " 3=" + this.getRobot().getMotor3().getDcMotor().getCurrentPosition() + " 4=" + this.getRobot().getMotor4().getDcMotor().getCurrentPosition() + "\n" +
+                "Servos: " + this.getRobot().getServoArm1().getPosition()  + " and " + this.getRobot().getServoArm2().getPosition(), true);
 
         // make sure servos & motors aren't dying
-        check();
+        //check();
 
         // get colors
         if(this.getRobot().getColorSensor() != null)
@@ -207,8 +132,6 @@ public class EncodersTest extends TeleOpMode {
                     stop();
                 }
             } else {
-                /* dir: 0=straight, 1=ff, -1=90 */
-
                 boolean adjusting = false;
 
                 // arm stuff and small adjustment stuff
@@ -262,9 +185,9 @@ public class EncodersTest extends TeleOpMode {
                         point(Direction.NINETY);
                     }
 
-                    drive(-x);
+                    drive(x);
 
-                } else if(!isZero(x1)) {
+                } else if(!isZero(x1, 0.3)) {
                     // ff
                     if (dir != Direction.FORTYFIVE) {
                         point(Direction.FORTYFIVE);

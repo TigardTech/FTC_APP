@@ -20,7 +20,7 @@ public class Constants {
     public static final String ARM_MOTOR = "motor_arm";
 
     /* define sensor names. empty string disables sensor. */
-    public static final String COLOR_SENSOR = "";
+    public static final String COLOR_SENSOR = "color";
     public static final String GYRO_SENSOR = "";
 
     /* thresholds */

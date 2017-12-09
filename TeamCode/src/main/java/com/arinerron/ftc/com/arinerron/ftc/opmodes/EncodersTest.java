@@ -9,7 +9,7 @@ import com.arinerron.ftc.TeleOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name = "TeleOp #2   ", group = "TeleOp")
+@TeleOp(name = "TeleOp #2", group = "TeleOp")
 public class EncodersTest extends TeleOpMode {
     public EncodersTest() {
         super();
@@ -51,6 +51,8 @@ public class EncodersTest extends TeleOpMode {
         double y = -this.getGamepad().right_stick_y;
         double x1 = this.getGamepad().left_stick_x;
         double y1 = -this.getGamepad().left_stick_y;
+
+        this.color = "blue: " + this.getRobot().getColorSensor().blue();
 
         // debug stuff
         this.write("\nMode: " + (mode ? "advanced" : "simple") + "\n" +

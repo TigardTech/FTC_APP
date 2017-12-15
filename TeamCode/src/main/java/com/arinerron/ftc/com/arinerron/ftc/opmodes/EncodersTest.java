@@ -32,6 +32,9 @@ public class EncodersTest extends TeleOpMode {
 
     private boolean left = false, right = false, up = false, down = false;
 
+    public String getColorBR() {
+        return (this.getRobot().getColorSensor().red() > this.getRobot().getColorSensor().blue() ? "red" : (this.getRobot().getColorSensor().blue() > this.getRobot().getColorSensor().red() ? "blue" : "neither"));
+    }
 
     public void stop() {
         this.getRobot().getMotor1().setPower(0);
@@ -44,6 +47,7 @@ public class EncodersTest extends TeleOpMode {
     private Position armpos = Position.STOPPED;
     private boolean armtop = true, armbottom = true;
     private String color = "";
+    private boolean run = false;
 
     @Override
     public void repeat() {
@@ -52,24 +56,42 @@ public class EncodersTest extends TeleOpMode {
         double x1 = this.getGamepad().left_stick_x;
         double y1 = -this.getGamepad().left_stick_y;
 
-        this.color = "blue: " + this.getRobot().getColorSensor().blue();
-
         // debug stuff
         this.write("\nMode: " + (mode ? "advanced" : "simple") + "\n" +
                 "Stick: (" + ((double)Math.round(x1 * 10d) / 10d) + ", " + ((double)Math.round(y1 * 10d) / 10d) + ") & (" + ((double)Math.round(x * 10d) / 10d) + ", " + ((double)Math.round(y * 10d) / 10d) + ")\n" +
                 "Motors: " + ((!isZero(this.getRobot().getMotor1().getPower()) || !isZero(this.getRobot().getMotor2().getPower()) || !isZero(this.getRobot().getMotor3().getPower()) || !isZero(this.getRobot().getMotor4().getPower())) ? "active" : "inactive") + "\n" +
                 "Arm: " + (armpos == Position.IN ? "pulling in" : (armpos == Position.OUT ? "pushing out" : "inactive")) + "\n" +
                 "Direction: " + (dir == Direction.STRAIGHT ? "straight" : (dir == Direction.FORTYFIVE ? "forty five" : "horizontal")) + "\n" +
-                "Color: " + (color.length() != 0 ? color.toLowerCase() : "N/A") + "\n" +
+                "Color: " + (color.length() != 0 ? color.toLowerCase() : "N/A") + "(" + (this.getRobot().getColorSensor().blue() > this.getRobot().getColorSensor().red() ? "blue" : "red") + "?)\n" +
                 "Encoders: 1=" + this.getRobot().getMotor1().getDcMotor().getCurrentPosition() + " 2=" + this.getRobot().getMotor2().getDcMotor().getCurrentPosition() + " 3=" + this.getRobot().getMotor3().getDcMotor().getCurrentPosition() + " 4=" + this.getRobot().getMotor4().getDcMotor().getCurrentPosition() + "\n" +
-                "Servos: " + this.getRobot().getServoArm1().getPosition()  + " and " + this.getRobot().getServoArm2().getPosition(), true);
+                "Servos: " + "jew:" + this.getRobot().getServoArmJ().getPosition()  + " and rel:" + this.getRobot().getServoRelic().getPosition(), true);
 
         // make sure servos & motors aren't dying
         //check();
 
+        if(this.getGamepadB().dpad_up) {
+            this.getRobot().getServoRelic().setPosition(1.0);
+            this.getRobot().getMotorRelic().setPower(1.0);
+        } else if(this.getGamepadB().dpad_down) {
+            this.getRobot().getServoRelic().setPosition(0.0);
+            this.getRobot().getMotorRelic().setPower(-1.0);
+        } else {
+            this.getRobot().getServoRelic().setPosition(0.5);
+            this.getRobot().getMotorRelic().setPower(0);
+        }
+
+        if(this.getGamepadB().dpad_right) {
+            this.getRobot().getServoArmJ().setPosition(1.0);
+        } else if(this.getGamepadB().dpad_left) {
+            this.getRobot().getServoArmJ().setPosition(0.0);
+        } else {
+            this.getRobot().getServoArmJ().setPosition(0.5);
+        }
+
         // get colors
         if(this.getRobot().getColorSensor() != null)
             this.color = isColor(this.getRobot().getColorSensor().red(), this.getRobot().getColorSensor().green(), this.getRobot().getColorSensor().blue(), "red") ? "red" : (isColor(this.getRobot().getColorSensor().red(), this.getRobot().getColorSensor().green(), this.getRobot().getColorSensor().blue(), "blue") ? "blue" : "");
+        // this.color = "r:" + this.getRobot().getColorSensor().red() + " g:" + this.getRobot().getColorSensor().green() + " b:" + this.getRobot().getColorSensor().blue() + " a:" + this.getRobot().getColorSensor().alpha();
 
         // change modes from simple to advanced or vice versa
         if(this.getGamepad().x) {

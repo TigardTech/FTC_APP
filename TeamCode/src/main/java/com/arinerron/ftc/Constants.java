@@ -13,15 +13,18 @@ public class Constants {
     public static final String SA1_SERVO = "servo_arm1";
     public static final String SA2_SERVO = "servo_arm2";
     public static final String SAE_SERVO = "servo_arme";
+    public static final String SAJ_SERVO = "servo_armj"; // jewel hitter
+    public static final String SR_SERVO = "servo_relic";
     public static final String M1_MOTOR = "motor1";
     public static final String M2_MOTOR = "motor2";
     public static final String M3_MOTOR = "motor3";
     public static final String M4_MOTOR = "motor4";
     public static final String ARM_MOTOR = "motor_arm";
+    public static final String RELIC_MOTOR = "motor_relic";
 
     /* define sensor names. empty string disables sensor. */
     public static final String COLOR_SENSOR = "color";
-    public static final String GYRO_SENSOR = "";
+    public static final String GYRO_SENSOR = "gyro";
 
     /* thresholds */
     public static final double DRIVING_THRESHOLD = 0.1;

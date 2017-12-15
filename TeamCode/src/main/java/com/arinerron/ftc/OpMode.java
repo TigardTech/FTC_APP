@@ -48,6 +48,9 @@ public abstract class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpM
     public void init() {
         this.map = hardwareMap;
         this.robot = new Robot(this);
+
+        if(this.getRobot().getColorSensor() != null)
+            this.getRobot().getColorSensor().enableLed(true);
     }
 
     @Override

@@ -12,6 +12,7 @@ public class Robot {
     private Motor m3 = null;
     private Motor m4 = null;
     private Motor arm = null;
+    private Motor mr = null;
     // wheel servos
     private Servo s1 = null;
     private Servo s2 = null;
@@ -21,6 +22,8 @@ public class Robot {
     private Servo sa1 = null;
     private Servo sa2 = null;
     private Servo sae = null;
+    private Servo saj = null;
+    private Servo sr = null;
 
     private ColorSensor sensorColor = null;
     private GyroSensor sensorGyro = null;
@@ -42,10 +45,13 @@ public class Robot {
             this.s3 = new Servo(this, this.getOpMode().getServo(Constants.S3_SERVO));
             this.m4 = new Motor(this, this.getOpMode().getMotor(Constants.M4_MOTOR));
             this.s4 = new Servo(this, this.getOpMode().getServo(Constants.S4_SERVO));
+            this.mr = new Motor(this, this.getOpMode().getMotor(Constants.RELIC_MOTOR));
             this.arm = new Motor(this, this.getOpMode().getMotor(Constants.ARM_MOTOR));
             this.sa1 = new Servo(this, this.getOpMode().getServo(Constants.SA1_SERVO));
             this.sa2 = new Servo(this, this.getOpMode().getServo(Constants.SA2_SERVO));
             this.sae = new Servo(this, this.getOpMode().getServo(Constants.SAE_SERVO));
+            this.saj = new Servo(this, this.getOpMode().getServo(Constants.SAJ_SERVO));
+            this.sr = new Servo(this, this.getOpMode().getServo(Constants.SR_SERVO)); // relic servo
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -115,6 +121,7 @@ public class Robot {
     public Motor getMotorArm() {
         return this.arm;
     }
+    public Motor getMotorRelic() { return this.mr; }
 
     /* get servos */
     public Servo getServo1() {
@@ -138,6 +145,8 @@ public class Robot {
     public Servo getServoArmE() {
         return this.sae;
     }
+    public Servo getServoArmJ() { return this.saj; }
+    public Servo getServoRelic() { return this.sr; }
 
     /* get Opmode */
     public OpMode getOpMode() {

@@ -36,7 +36,6 @@ public class Robot {
         this.mode = mode;
 
         // create motor&servo instances
-        try {
             this.m1 = new Motor(this, this.getOpMode().getMotor(Constants.M1_MOTOR));
             this.s1 = new Servo(this, this.getOpMode().getServo(Constants.S1_SERVO));
             this.m2 = new Motor(this, this.getOpMode().getMotor(Constants.M2_MOTOR));
@@ -52,9 +51,12 @@ public class Robot {
             this.sae = new Servo(this, this.getOpMode().getServo(Constants.SAE_SERVO));
             this.saj = new Servo(this, this.getOpMode().getServo(Constants.SAJ_SERVO));
             this.sr = new Servo(this, this.getOpMode().getServo(Constants.SR_SERVO)); // relic servo
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
+
+        this.sa1.setCenter(0.5);
+        this.sa2.setCenter(0.5);
+        this.sae.setCenter(0.5);
+        this.saj.setCenter(0.5);
+        this.sr.setCenter(0.5);
 
         // enable/disable encoders on motors
         this.getMotor1().setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);

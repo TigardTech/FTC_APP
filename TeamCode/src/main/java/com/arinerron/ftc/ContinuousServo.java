@@ -6,6 +6,7 @@ public class ContinuousServo extends Servo {
         super(robot, servo);
     }
 
+    @Override
     public double getCenter() {
         return 0.5;
     }

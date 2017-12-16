@@ -17,12 +17,12 @@ public class Servo {
     /* replaces the NaN with valid data. should be run once opmode is started */
     public void fix() {
         if(Double.isNaN(this.getPosition()))
-            this.setPosition(0);
+            this.setPosition(this.getCenter());
     }
 
     /* sets the servo's position */
     public void setPosition(double position) {
-        this.getServo().setPosition(check(this.getCenter() + position));
+        this.getServo().setPosition(check(position));
     }
 
     /* check servo to make sure it isn't running more pos than it should */
@@ -72,6 +72,10 @@ public class Servo {
     /* returns the servo's center position */
     public double getCenter() {
         return this.center;
+    }
+
+    public void setCenter(double center) {
+        this.center = center;
     }
 
     /* returns robot object */

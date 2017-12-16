@@ -4,21 +4,36 @@ import com.arinerron.ftc.Constants;
 import com.arinerron.ftc.Direction;
 import com.arinerron.ftc.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Three Feet", group="Iterative OpMode")
-public class ThreeFeetMode extends OpMode {
-    public ThreeFeetMode() {
+@Disabled
+public class HitOpMode extends OpMode {
+    public HitOpMode() {
         super();
     }
 
     @Override
     public void init() {
-        this.point(Direction.FORTYFIVE);
+        super.init();
+
+        if(this.getRobot().getColorSensor() != null)
+            this.getRobot().getColorSensor().enableLed(true);
+
+        write("Driving OpMode initialized.");
+    }
+
+    public String getColor() {
+        return "red";
     }
 
     @Override
     public void run() {
+        this.getRobot().getServoArm1().setPosition(0.5);
+        this.getRobot().getServoArm2().setPosition(0.5);
+
+        this.point(Direction.FORTYFIVE);
+
         write("Extending arm...");
         ElapsedTime timer = new ElapsedTime();
         timer.reset();
@@ -35,13 +50,13 @@ public class ThreeFeetMode extends OpMode {
         write("Checking balls...");
         String color = isColor(this.getRobot().getColorSensor().red(), this.getRobot().getColorSensor().green(), this.getRobot().getColorSensor().blue(), "red") ? "red" : (isColor(this.getRobot().getColorSensor().red(), this.getRobot().getColorSensor().green(), this.getRobot().getColorSensor().blue(), "blue") ? "blue" : "");
 
-        String wantedcolor = "red".toLowerCase();
+        String wantedcolor = getColor().toLowerCase();
 
         write("Got " + color + ". Hitting " + wantedcolor + "...");
 
         int dir;
 
-        if(!color.equalsIgnoreCase(wantedcolor)) {
+        if(color.equalsIgnoreCase(wantedcolor)) {
             dir = 1;
         } else {
             dir = -1; // ik redundant, oh well
@@ -56,17 +71,21 @@ public class ThreeFeetMode extends OpMode {
                 e.printStackTrace();
             }
         }
-        this.getRobot().reset();
-
-        // -1 is towards the color, 1 is away from it
 
         timer.reset();
+        this.getRobot().getServoArmJ().setPosition(1);
+        while(timer.seconds() < 1) {
+            try {
+                Thread.sleep(10); // get rid of thread locking
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
+        this.getRobot().getServoArmJ().setPosition(0.5);
 
-        write("Waiting 10 secs...");
-
-        this.getRobot().getServoArmJ().setPosition(0);
-
-        while(timer.seconds() < 10) {
+        timer.reset();
+        this.drive(-dir);
+        while(timer.seconds() < 0.35) {
             try {
                 Thread.sleep(10); // get rid of thread locking
             } catch(Exception e) {
@@ -74,11 +93,26 @@ public class ThreeFeetMode extends OpMode {
             }
         }
 
+        this.getRobot().reset();
+
+        // -1 is towards the color, 1 is away from it
+
+        timer.reset();
+
+        write("And here we go...");
+
+        this.getRobot().getServoRelic().setPosition(0.5); // stop
+
         write("Driving...");
+        
         point(Direction.STRAIGHT);
-        driveInches(12 * 3);
+        driveInches(getMultiplier() * 12 * 3);
         point(Direction.STRAIGHT);
         write("Done.");
+    }
+
+    public double getMultiplier() {
+        return 1;
     }
 
     @Override

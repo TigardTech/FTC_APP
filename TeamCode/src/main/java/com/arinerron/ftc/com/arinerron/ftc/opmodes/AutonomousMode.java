@@ -3,9 +3,11 @@ package com.arinerron.ftc.com.arinerron.ftc.opmodes;
 import com.arinerron.ftc.Constants;
 import com.arinerron.ftc.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Drive Forward", group="Iterative OpMode")
+@Disabled
+//@Autonomous(name="Drive Forward", group="Iterative OpMode")
 public class AutonomousMode extends OpMode {
     public AutonomousMode() {
         super();

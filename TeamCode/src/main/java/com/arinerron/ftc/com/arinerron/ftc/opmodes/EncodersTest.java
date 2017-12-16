@@ -28,6 +28,8 @@ public class EncodersTest extends TeleOpMode {
     @Override
     public void run() {
         write("OpMode running...");
+        this.getRobot().getServoArm1().setPosition(0.5);
+        this.getRobot().getServoArm2().setPosition(0.5);
     }
 
     private boolean left = false, right = false, up = false, down = false;
@@ -256,6 +258,10 @@ public class EncodersTest extends TeleOpMode {
             this.getRobot().getMotorArm().setPower(-this.getGamepad().left_trigger / 2);
         } else if (this.getGamepad().right_trigger > Constants.TRIGGER_THRESHOLD) {
             this.getRobot().getMotorArm().setPower(this.getGamepad().right_trigger / 2);
+        } else if (this.getGamepadB().left_trigger > Constants.TRIGGER_THRESHOLD) {
+            this.getRobot().getMotorArm().setPower(-this.getGamepadB().left_trigger / 2);
+        } else if (this.getGamepadB().right_trigger > Constants.TRIGGER_THRESHOLD) {
+            this.getRobot().getMotorArm().setPower(this.getGamepadB().right_trigger / 2);
         } else {
             this.getRobot().getMotorArm().setPower(0);
         }

@@ -3,12 +3,14 @@ package com.arinerron.ftc.com.arinerron.ftc.opmodes;
 import com.arinerron.ftc.Constants;
 import com.arinerron.ftc.Servo;
 import com.arinerron.ftc.TeleOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-@TeleOp(name = "Mechanics Test", group = "TeleOp")
+//@TeleOp(name = "Mechanics Test", group = "TeleOp")
+@Disabled
 public class TestTeleOpMode extends TeleOpMode {
     public TestTeleOpMode() {
         super();

@@ -47,8 +47,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-@Autonomous(name="Identification", group ="Concept")
-//@Disabled
+//@Autonomous(name="Identification", group ="Concept")
+@Disabled
 public class IdentificationTest extends LinearOpMode {
 
     public static final String TAG = "Identification";

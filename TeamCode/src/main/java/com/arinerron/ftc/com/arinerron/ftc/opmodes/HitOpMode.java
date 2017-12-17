@@ -3,7 +3,6 @@ package com.arinerron.ftc.com.arinerron.ftc.opmodes;
 import com.arinerron.ftc.Constants;
 import com.arinerron.ftc.Direction;
 import com.arinerron.ftc.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -54,6 +53,26 @@ public class HitOpMode extends OpMode {
 
         write("Got " + color + ". Hitting " + wantedcolor + "...");
 
+        timer.reset();
+        while(timer.seconds() < 4) {
+            try {
+                Thread.sleep(10); // get rid of thread locking
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        if(color.equalsIgnoreCase("")) {
+            this.drive(0.05);
+            timer.reset();
+            while(timer.seconds() < 5 && color.length() == 0) {
+                color = isColor(this.getRobot().getColorSensor().red(), this.getRobot().getColorSensor().green(), this.getRobot().getColorSensor().blue(), "red") ? "red" : (isColor(this.getRobot().getColorSensor().red(), this.getRobot().getColorSensor().green(), this.getRobot().getColorSensor().blue(), "blue") ? "blue" : "");
+            }
+            this.getRobot().reset();
+
+            write("Got (2) " + color + ". Hitting " + wantedcolor + "...");
+        }
+
         int dir;
 
         if(color.equalsIgnoreCase(wantedcolor)) {
@@ -62,11 +81,12 @@ public class HitOpMode extends OpMode {
             dir = -1; // ik redundant, oh well
         }
 
+        this.getRobot().getServoArmJ().setPosition(0);
         timer.reset();
         this.drive(dir);
         while(timer.seconds() < 0.2) {
             try {
-                Thread.sleep(10); // get rid of thread locking
+                Thread.sleep(1); // get rid of thread locking
             } catch(Exception e) {
                 e.printStackTrace();
             }
@@ -85,7 +105,7 @@ public class HitOpMode extends OpMode {
 
         timer.reset();
         this.drive(-dir);
-        while(timer.seconds() < 0.35) {
+        while(timer.seconds() < 0.3) {
             try {
                 Thread.sleep(10); // get rid of thread locking
             } catch(Exception e) {
@@ -106,7 +126,8 @@ public class HitOpMode extends OpMode {
         write("Driving...");
         
         point(Direction.STRAIGHT);
-        driveInches(getMultiplier() * 12 * 3);
+        this.waitr(0.25);
+        stop();
         point(Direction.STRAIGHT);
         write("Done.");
     }
@@ -119,7 +140,11 @@ public class HitOpMode extends OpMode {
     public void repeat() {
 
     }
-
+    private ElapsedTime timer2 = new ElapsedTime();
+    private void waitr(double seconds) {
+        timer2.reset();
+        while(timer2.seconds() < seconds);
+    }
 
     public static boolean isZero(double x) {
         return x < Constants.TRIGGER_THRESHOLD && x > -Constants.TRIGGER_THRESHOLD;

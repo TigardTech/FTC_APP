@@ -2,12 +2,13 @@ package com.arinerron.ftc.com.arinerron.ftc.opmodes;
 
 import com.arinerron.ftc.Constants;
 import com.arinerron.ftc.OpMode;
+import com.arinerron.ftc.Position;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Disabled
-//@Autonomous(name="Drive Forward", group="Iterative OpMode")
+//@Disabled
+@Autonomous(name="BACKUP MODE", group="Iterative OpMode")
 public class AutonomousMode extends OpMode {
     public AutonomousMode() {
         super();
@@ -96,18 +97,23 @@ public class AutonomousMode extends OpMode {
     public void run() {
         write("OpMode running...");
 
+        this.getRobot().getServoRelic().setPosition(0.5); // stop
+
         // drive to the safe zone for points
         point(Constants.DIRECTION_STRAIGHT);
         drive(1);
-        this.waitr(1.25);
+        this.waitr(1.3);
         stop();
         //armsOpen(false);
+        this.setClaw(Position.OUT);
         this.waitr(2);
         this.getRobot().getServoArm1().setPosition(0.5);
         this.getRobot().getServoArm2().setPosition(0.5);
         drive(-1);
         this.waitr(0.25);
         stop();
+
+        this.getRobot().getServoRelic().setPosition(0.5); // stop
 
     }
 

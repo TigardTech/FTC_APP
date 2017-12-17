@@ -273,4 +273,24 @@ public abstract class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpM
 
         return conditionssatisfied;
     }
+
+    private Position armpos = Position.STOPPED;
+
+    public void setClaw(Position pos) {
+        if(pos == Position.IN) {
+            // pull in
+            this.getRobot().getServoArm1().setPosition(0);
+            this.getRobot().getServoArm2().setPosition(1);
+        } else if(pos == Position.OUT) {
+            // push out
+            this.getRobot().getServoArm1().setPosition(1);
+            this.getRobot().getServoArm2().setPosition(0);
+        } else {
+            // stop servos
+            this.getRobot().getServoArm1().setPosition(0.5);
+            this.getRobot().getServoArm2().setPosition(0.5);
+        }
+
+        this.armpos = pos;
+    }
 }

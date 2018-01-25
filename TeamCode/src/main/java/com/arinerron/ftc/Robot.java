@@ -12,7 +12,9 @@ public class Robot {
     private Motor m3 = null;
     private Motor m4 = null;
     private Motor arm = null;
-    private Motor mr = null;
+    private Motor armlift = null;
+    private Motor mr1 = null;
+    private Motor mr2 = null;
     // wheel servos
     private Servo s1 = null;
     private Servo s2 = null;
@@ -23,6 +25,7 @@ public class Robot {
     private Servo sa2 = null;
     private Servo sae = null;
     private Servo saj = null;
+    private Servo sag = null; // arm grabber
     private Servo sr = null;
 
     private ColorSensor sensorColor = null;
@@ -36,27 +39,31 @@ public class Robot {
         this.mode = mode;
 
         // create motor&servo instances
-            this.m1 = new Motor(this, this.getOpMode().getMotor(Constants.M1_MOTOR));
-            this.s1 = new Servo(this, this.getOpMode().getServo(Constants.S1_SERVO));
-            this.m2 = new Motor(this, this.getOpMode().getMotor(Constants.M2_MOTOR));
-            this.s2 = new Servo(this, this.getOpMode().getServo(Constants.S2_SERVO));
-            this.m3 = new Motor(this, this.getOpMode().getMotor(Constants.M3_MOTOR));
-            this.s3 = new Servo(this, this.getOpMode().getServo(Constants.S3_SERVO));
-            this.m4 = new Motor(this, this.getOpMode().getMotor(Constants.M4_MOTOR));
-            this.s4 = new Servo(this, this.getOpMode().getServo(Constants.S4_SERVO));
-            this.mr = new Motor(this, this.getOpMode().getMotor(Constants.RELIC_MOTOR));
-            this.arm = new Motor(this, this.getOpMode().getMotor(Constants.ARM_MOTOR));
-            this.sa1 = new Servo(this, this.getOpMode().getServo(Constants.SA1_SERVO));
-            this.sa2 = new Servo(this, this.getOpMode().getServo(Constants.SA2_SERVO));
-            this.sae = new Servo(this, this.getOpMode().getServo(Constants.SAE_SERVO));
-            this.saj = new Servo(this, this.getOpMode().getServo(Constants.SAJ_SERVO));
-            this.sr = new Servo(this, this.getOpMode().getServo(Constants.SR_SERVO)); // relic servo
+        this.m1 = new Motor(this, this.getOpMode().getMotor(Constants.M1_MOTOR));
+        this.s1 = new Servo(this, this.getOpMode().getServo(Constants.S1_SERVO));
+        this.m2 = new Motor(this, this.getOpMode().getMotor(Constants.M2_MOTOR));
+        this.s2 = new Servo(this, this.getOpMode().getServo(Constants.S2_SERVO));
+        this.m3 = new Motor(this, this.getOpMode().getMotor(Constants.M3_MOTOR));
+        this.s3 = new Servo(this, this.getOpMode().getServo(Constants.S3_SERVO));
+        this.m4 = new Motor(this, this.getOpMode().getMotor(Constants.M4_MOTOR));
+        this.s4 = new Servo(this, this.getOpMode().getServo(Constants.S4_SERVO));
+        this.mr1 = new Motor(this, this.getOpMode().getMotor(Constants.RELIC1_MOTOR));
+        this.mr2 = new Motor(this, this.getOpMode().getMotor(Constants.RELIC2_MOTOR));
+        //this.arm = new Motor(this, this.getOpMode().getMotor(Constants.ARM_MOTOR));
+        this.armlift = new Motor(this, this.getOpMode().getMotor(Constants.ARM_LIFT_MOTOR));
+        this.sa1 = new Servo(this, this.getOpMode().getServo(Constants.SA1_SERVO));
+        this.sa2 = new Servo(this, this.getOpMode().getServo(Constants.SA2_SERVO));
+        this.sae = new Servo(this, this.getOpMode().getServo(Constants.SAE_SERVO));
+        this.saj = new Servo(this, this.getOpMode().getServo(Constants.SAJ_SERVO));
+        this.sr = new Servo(this, this.getOpMode().getServo(Constants.SR_SERVO)); // relic servo
+        this.sag = new Servo(this, this.getOpMode().getServo(Constants.SAG_SERVO));
 
         this.sa1.setCenter(0.5);
         this.sa2.setCenter(0.5);
         this.sae.setCenter(0.5);
         this.saj.setCenter(0.5);
         this.sr.setCenter(0.5);
+        this.sag.setCenter(0.5);
 
         // enable/disable encoders on motors
         this.getMotor1().setDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -123,7 +130,11 @@ public class Robot {
     public Motor getMotorArm() {
         return this.arm;
     }
-    public Motor getMotorRelic() { return this.mr; }
+    public Motor getMotorArmLift() {
+        return this.armlift;
+    }
+    public Motor getMotorRelic1() { return this.mr1; }
+    public Motor getMotorRelic2() { return this.mr2; }
 
     /* get servos */
     public Servo getServo1() {
@@ -149,6 +160,7 @@ public class Robot {
     }
     public Servo getServoArmJ() { return this.saj; }
     public Servo getServoRelic() { return this.sr; }
+    public Servo getServoRelicGrabber() {return this.sag;}
 
     /* get Opmode */
     public OpMode getOpMode() {

@@ -1,6 +1,7 @@
 package com.arinerron.ftc.com.arinerron.ftc.opmodes;
 
 import com.arinerron.ftc.Constants;
+import com.arinerron.ftc.Direction;
 import com.arinerron.ftc.Servo;
 import com.arinerron.ftc.TeleOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -9,8 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-//@TeleOp(name = "Mechanics Test", group = "TeleOp")
-@Disabled
+@TeleOp(name = "Mechanics Test", group = "TeleOp")
 public class TestTeleOpMode extends TeleOpMode {
     public TestTeleOpMode() {
         super();
@@ -46,13 +46,7 @@ private boolean pressedl = false, holdingl = false;
             this.write("debug", "pos: " + round(servo.getPosition(), 2) + " & servo: " + (servoi % 3 == 0 ? "arm" : "arm" + (servoi % 3)));
 
         if(Double.isNaN(this.getRobot().getServo1().getPosition()))
-            this.getRobot().getServo1().setPosition(0);
-        if(Double.isNaN(this.getRobot().getServo2().getPosition()))
-            this.getRobot().getServo2().setPosition(0);
-        if(Double.isNaN(this.getRobot().getServo3().getPosition()))
-            this.getRobot().getServo3().setPosition(0);
-        if(Double.isNaN(this.getRobot().getServo4().getPosition()))
-            this.getRobot().getServo4().setPosition(0);
+            point(Direction.STRAIGHT);
         if(Double.isNaN(this.getRobot().getServoArm1().getPosition()))
             this.getRobot().getServoArm1().setPosition(0.5);
         if(Double.isNaN(this.getRobot().getServoArm2().getPosition()))

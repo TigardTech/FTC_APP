@@ -9,7 +9,7 @@ import com.arinerron.ftc.TeleOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name = "TeleOp #2", group = "TeleOp")
+@TeleOp(name = "Main TeleOp", group = "TeleOp")
 public class EncodersTest extends TeleOpMode {
     public EncodersTest() {
         super();
@@ -49,7 +49,7 @@ public class EncodersTest extends TeleOpMode {
     private Position armpos = Position.STOPPED;
     private boolean armtop = true, armbottom = true;
     private String color = "";
-    private boolean run = false;
+    private boolean run = false, open = true, pressedclaw = false, first = true;
 
     @Override
     public void repeat() {
@@ -58,20 +58,24 @@ public class EncodersTest extends TeleOpMode {
         double x1 = this.getGamepad().left_stick_x;
         double y1 = -this.getGamepad().left_stick_y;
 
+        if(first) {
+            first = false;
+            point(Direction.STRAIGHT);
+        }
+
         // debug stuff
         this.write("\nMode: " + (mode ? "advanced" : "simple") + "\n" +
-                "Stick: (" + ((double)Math.round(x1 * 10d) / 10d) + ", " + ((double)Math.round(y1 * 10d) / 10d) + ") & (" + ((double)Math.round(x * 10d) / 10d) + ", " + ((double)Math.round(y * 10d) / 10d) + ")\n" +
+                "Stick: [" + ((double)Math.round(x1 * 10d) / 10d) + ", " + ((double)Math.round(y1 * 10d) / 10d) + "] & [" + ((double)Math.round(x * 10d) / 10d) + ", " + ((double)Math.round(y * 10d) / 10d) + "]\n" +
                 "Motors: " + ((!isZero(this.getRobot().getMotor1().getPower()) || !isZero(this.getRobot().getMotor2().getPower()) || !isZero(this.getRobot().getMotor3().getPower()) || !isZero(this.getRobot().getMotor4().getPower())) ? "active" : "inactive") + "\n" +
                 "Arm: " + (armpos == Position.IN ? "pulling in" : (armpos == Position.OUT ? "pushing out" : "inactive")) + "\n" +
                 "Direction: " + (dir == Direction.STRAIGHT ? "straight" : (dir == Direction.FORTYFIVE ? "forty five" : "horizontal")) + "\n" +
                 "Color: " + (color.length() != 0 ? color.toLowerCase() : "N/A") + "(" + (this.getRobot().getColorSensor().blue() > this.getRobot().getColorSensor().red() ? "blue" : "red") + "?)\n" +
-                "Encoders: 1=" + this.getRobot().getMotor1().getDcMotor().getCurrentPosition() + " 2=" + this.getRobot().getMotor2().getDcMotor().getCurrentPosition() + " 3=" + this.getRobot().getMotor3().getDcMotor().getCurrentPosition() + " 4=" + this.getRobot().getMotor4().getDcMotor().getCurrentPosition() + "\n" +
-                "Servos: " + "jew:" + this.getRobot().getServoArmJ().getPosition()  + " and rel:" + this.getRobot().getServoRelic().getPosition(), true);
+                "Encoders: [1=" + this.getRobot().getMotor1().getDcMotor().getCurrentPosition() + ", 2=" + this.getRobot().getMotor2().getDcMotor().getCurrentPosition() + ", 3=" + this.getRobot().getMotor3().getDcMotor().getCurrentPosition() + ", 4=" + this.getRobot().getMotor4().getDcMotor().getCurrentPosition() + "]\n", true);
 
         // make sure servos & motors aren't dying
         //check();
 
-        if(this.getGamepadB().dpad_up) {
+        /*if(this.getGamepadB().dpad_up) {
             this.getRobot().getServoRelic().setPosition(1.0);
             this.getRobot().getMotorRelic().setPower(1.0);
         } else if(this.getGamepadB().dpad_down) {
@@ -80,7 +84,7 @@ public class EncodersTest extends TeleOpMode {
         } else {
             this.getRobot().getServoRelic().setPosition(0.5);
             this.getRobot().getMotorRelic().setPower(0);
-        }
+        }*/
 
         if(this.getGamepadB().dpad_right) {
             this.getRobot().getServoArmJ().setPosition(1.0);
@@ -93,7 +97,6 @@ public class EncodersTest extends TeleOpMode {
         // get colors
         if(this.getRobot().getColorSensor() != null)
             this.color = isColor(this.getRobot().getColorSensor().red(), this.getRobot().getColorSensor().green(), this.getRobot().getColorSensor().blue(), "red") ? "red" : (isColor(this.getRobot().getColorSensor().red(), this.getRobot().getColorSensor().green(), this.getRobot().getColorSensor().blue(), "blue") ? "blue" : "");
-        // this.color = "r:" + this.getRobot().getColorSensor().red() + " g:" + this.getRobot().getColorSensor().green() + " b:" + this.getRobot().getColorSensor().blue() + " a:" + this.getRobot().getColorSensor().alpha();
 
         // change modes from simple to advanced or vice versa
         if(this.getGamepad().x) {
@@ -136,7 +139,7 @@ public class EncodersTest extends TeleOpMode {
             if(this.getGamepad().y) {
                 stop();
                 this.setClaw(Position.STOPPED);
-                this.getRobot().getMotorArm().setPower(0);
+                // this.getRobot().getMotorArm().setPower(0);
             }
 
             if(mode) {
@@ -179,7 +182,8 @@ public class EncodersTest extends TeleOpMode {
                     if (dir != Direction.STRAIGHT && !rpressed) {
                         rpressed = true;
 
-                        point(Direction.STRAIGHT);
+                        point(Direction.FORTYFIVE);
+                       // point(Direction.STRAIGHT);
                     }
                     drive(0.2);
                 } else if (this.getGamepad().dpad_down) {
@@ -254,7 +258,7 @@ public class EncodersTest extends TeleOpMode {
         }
 
         // move motor arm around
-        if (this.getGamepad().left_trigger > Constants.TRIGGER_THRESHOLD) {
+        /*if (this.getGamepad().left_trigger > Constants.TRIGGER_THRESHOLD) {
             this.getRobot().getMotorArm().setPower(-this.getGamepad().left_trigger / 2);
         } else if (this.getGamepad().right_trigger > Constants.TRIGGER_THRESHOLD) {
             this.getRobot().getMotorArm().setPower(this.getGamepad().right_trigger / 2);
@@ -264,6 +268,46 @@ public class EncodersTest extends TeleOpMode {
             this.getRobot().getMotorArm().setPower(this.getGamepadB().right_trigger / 2);
         } else {
             this.getRobot().getMotorArm().setPower(0);
+        }*/
+
+        /*
+         * Constants.TRIGGER_THRESHOLD : The minimum amount the trigger must be pressed to move the lift
+         * this.getGamepad().right_trigger : The amount that the right trigger is pressed, from 0 to 1
+         * this.getRobot().getMotorArmLift().setPower(power) : Sets the amount of power on the lifting motor
+         */
+        if(this.getGamepad().right_trigger > Constants.TRIGGER_THRESHOLD) {
+            // lift the grabber up
+            this.getRobot().getMotorArmLift().setPower(-this.getGamepad().right_trigger);
+        } else if(this.getGamepad().left_trigger > Constants.TRIGGER_THRESHOLD) {
+            // let the grabber down
+            // divide by two to slow down-- gravity helps already, no need to speed things up that much
+            this.getRobot().getMotorArmLift().setPower(this.getGamepad().left_trigger / 2);
+        } else {
+            // stop the arm lift
+            this.getRobot().getMotorArmLift().setPower(0);
+        }
+
+        // relic grabber
+        if(this.getGamepadB().a) {
+            // open claw
+            if(!pressedclaw) {
+                open = !open;
+                this.setRelicGrabberOpen(open);
+                pressedclaw = true;
+            }
+        } else {
+            pressedclaw = false;
+        }
+
+        if(this.getGamepadB().right_trigger > Constants.TRIGGER_THRESHOLD) {
+            this.getRobot().getMotorRelic1().setPower(1);
+            this.getRobot().getMotorRelic2().setPower(-1);
+        } else if(this.getGamepadB().left_trigger > Constants.TRIGGER_THRESHOLD) {
+            this.getRobot().getMotorRelic1().setPower(-1);
+            this.getRobot().getMotorRelic2().setPower(1);
+        } else {
+            this.getRobot().getMotorRelic1().setPower(0);
+            this.getRobot().getMotorRelic2().setPower(0);
         }
     }
 

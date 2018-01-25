@@ -93,9 +93,11 @@ public class Identifier {
     }
 
     public boolean start() {
-        new Thread(new Runnable() {public void run() {
-            Identifier.this.run();
-        }}).start();
+        new Thread(new Runnable() {
+            public void run() {
+                Identifier.this.run();
+            }
+        }).start();
 
         return true;
     }

@@ -197,10 +197,10 @@ public abstract class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpM
         /* dir: 0=straight, 1=ff, -1=90 */
         if (dir == Direction.FORTYFIVE) {
             // ff
-            this.getRobot().getMotor1().setPower(-x); // i
-            this.getRobot().getMotor2().setPower(-x);
-            this.getRobot().getMotor3().setPower(x);
-            this.getRobot().getMotor4().setPower(x); // i
+            this.getRobot().getMotor1().setPower(x); // i
+            this.getRobot().getMotor2().setPower(x);
+            this.getRobot().getMotor3().setPower(-x);
+            this.getRobot().getMotor4().setPower(-x); // i
         } else if (dir == Direction.NINETY) {
             // ninety = invert some of these   l a t e r  ...
             this.getRobot().getMotor1().setPower(x);
@@ -210,8 +210,8 @@ public abstract class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpM
         } else if (dir == Direction.STRAIGHT) {
             // straight
             this.getRobot().getMotor1().setPower(-x);
-            this.getRobot().getMotor2().setPower(x); // inverted
-            this.getRobot().getMotor3().setPower(x); // inverted
+            this.getRobot().getMotor2().setPower(-x); // inverted
+            this.getRobot().getMotor3().setPower(-x); // inverted
             this.getRobot().getMotor4().setPower(-x);
         }
     }
@@ -276,7 +276,8 @@ public abstract class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpM
 
     private Position armpos = Position.STOPPED;
 
-    public void setClaw(Position pos) {
+    /* sets the position of the claw */
+    protected void setClaw(Position pos) {
         if(pos == Position.IN) {
             // pull in
             this.getRobot().getServoArm1().setPosition(0);
@@ -291,6 +292,15 @@ public abstract class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpM
             this.getRobot().getServoArm2().setPosition(0.5);
         }
 
+        // save the position to "history"
         this.armpos = pos;
+    }
+
+    public void setRelicGrabberOpen(boolean open) {
+        if(open) {
+            this.getRobot().getServoRelicGrabber().setPosition(0.5);
+        } else {
+            this.getRobot().getServoRelicGrabber().setPosition(0.3);
+        }
     }
 }

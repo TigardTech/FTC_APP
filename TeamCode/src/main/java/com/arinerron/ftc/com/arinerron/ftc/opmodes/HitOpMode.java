@@ -31,92 +31,80 @@ public class HitOpMode extends OpMode {
         this.getRobot().getServoArm1().setPosition(0.5);
         this.getRobot().getServoArm2().setPosition(0.5);
 
-        this.point(Direction.FORTYFIVE);
+        point(Direction.STRAIGHT);
 
         write("Extending arm...");
         ElapsedTime timer = new ElapsedTime();
         timer.reset();
-        this.getRobot().getServoArmJ().setPosition(0);
-        while(timer.seconds() < 1.5) {
-            try {
-                Thread.sleep(10); // get rid of thread locking
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
-        }
-        this.getRobot().getServoArmJ().setPosition(0.5);
+        this.getRobot().getServoArmJ().setPosition(1); // extends arm
+        this.waitr(1.25);
+        this.getRobot().getServoArmJ().setPosition(0.5); // stop extending
 
-        write("Checking balls...");
+        write("Checking balls..."); // see which color it is looking at
         String color = isColor(this.getRobot().getColorSensor().red(), this.getRobot().getColorSensor().green(), this.getRobot().getColorSensor().blue(), "red") ? "red" : (isColor(this.getRobot().getColorSensor().red(), this.getRobot().getColorSensor().green(), this.getRobot().getColorSensor().blue(), "blue") ? "blue" : "");
 
-        String wantedcolor = getColor().toLowerCase();
+        String wantedcolor = getColor().toLowerCase(); // sees if the color matches
 
-        write("Got " + color + ". Hitting " + wantedcolor + "...");
+        if(color.length() != 0)
+            write("Color sensor sees " + color + ". Hitting " + wantedcolor + "...");
+        else
+            write("No color identified. Rotating...");
 
-        timer.reset();
-        while(timer.seconds() < 4) {
-            try {
-                Thread.sleep(10); // get rid of thread locking
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
-        }
+        // wait 4 seconds for debug
+        this.waitr(4);
+        // stop waiting
 
+        // if it sees nothing
         if(color.equalsIgnoreCase("")) {
-            this.drive(0.05);
+            this.drive(-0.05); // start rotating slowly for 5 seconds
             timer.reset();
             while(timer.seconds() < 5 && color.length() == 0) {
                 color = isColor(this.getRobot().getColorSensor().red(), this.getRobot().getColorSensor().green(), this.getRobot().getColorSensor().blue(), "red") ? "red" : (isColor(this.getRobot().getColorSensor().red(), this.getRobot().getColorSensor().green(), this.getRobot().getColorSensor().blue(), "blue") ? "blue" : "");
             }
-            this.getRobot().reset();
+            this.getRobot().reset(); // stop when it sees something or if more than 5 secs, whichever comes first
 
-            write("Got (2) " + color + ". Hitting " + wantedcolor + "...");
+            write("Color sensor sees " + color + ". Hitting " + wantedcolor + "...");
         }
 
-        int dir;
+        int dir; // the direction variable
 
         if(color.equalsIgnoreCase(wantedcolor)) {
-            dir = 1;
+            dir = -1; // if the colors are the same, rotate 1 direction
         } else {
-            dir = -1; // ik redundant, oh well
+            dir = 1; // ik redundant, oh well. else, return other direction
         }
 
-        this.getRobot().getServoArmJ().setPosition(0);
-        timer.reset();
-        this.drive(dir);
-        while(timer.seconds() < 0.2) {
-            try {
-                Thread.sleep(1); // get rid of thread locking
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
-        }
+        this.drive(dir / 2.5); // drive for 0.5 secs
+        this.waitr(0.5);
+        this.drive(-dir / 2.5); // drive for 0.5 secs
+        this.waitr(0.5);
+        this.getRobot().getMotor1().setPower(0);
+        this.getRobot().getMotor2().setPower(0);
+        this.getRobot().getMotor3().setPower(0);
+        this.getRobot().getMotor4().setPower(0);
+        this.waitr(0.5);
+        this.getRobot().getServoArmJ().setPosition(0); // push servo up
+        this.point(Direction.NINETY);
+        this.drive(-0.5);
+        this.waitr(0.25);
+        this.getRobot().getMotor1().setPower(0);
+        this.getRobot().getMotor2().setPower(0);
+        this.getRobot().getMotor3().setPower(0);
+        this.getRobot().getMotor4().setPower(0);
 
-        timer.reset();
-        this.getRobot().getServoArmJ().setPosition(1);
-        while(timer.seconds() < 1) {
-            try {
-                Thread.sleep(10); // get rid of thread locking
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
-        }
-        this.getRobot().getServoArmJ().setPosition(0.5);
-
-        timer.reset();
-        this.drive(-dir);
-        while(timer.seconds() < 0.3) {
-            try {
-                Thread.sleep(10); // get rid of thread locking
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        this.getRobot().reset();
+        this.waitr(4);
+        this.drive(0.5);
+        this.waitr(0.25);
+        this.getRobot().getMotor1().setPower(0);
+        this.getRobot().getMotor2().setPower(0);
+        this.getRobot().getMotor3().setPower(0);
+        this.getRobot().getMotor4().setPower(0);
+        this.waitr(1);
+        this.point(Direction.STRAIGHT);
+        this.waitr(1);
 
         // -1 is towards the color, 1 is away from it
-
+/*
         timer.reset();
 
         write("And here we go...");
@@ -127,8 +115,13 @@ public class HitOpMode extends OpMode {
         
         point(Direction.STRAIGHT);
         this.waitr(0.25);
-        stop();
-        point(Direction.STRAIGHT);
+        stop();*/
+
+        driveInches(28);
+        this.getRobot().getServoArmJ().setPosition(0.5); // end arm movement
+
+
+
         write("Done.");
     }
 

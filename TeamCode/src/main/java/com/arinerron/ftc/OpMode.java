@@ -140,7 +140,7 @@ public abstract class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpM
         return false; // unknown color
     }
 
-    private final double[] straight /*0*/ = {1, 0.2, 0.7, 0.3}, ff /*1*/ = {0.6, 0.6, 0.3, 0.6}, ninety /*-1*/ = {0.3, 0.9, 0, 1};
+    private final double[] straight /*0*/ = {1, 0.9 /*0.2*/, 0.7, 0.3}, ff /*1*/ = {0.6, 0.5/*0.6*/, 0.3, 0.6}, ninety /*-1*/ = {0.3, 0.15/*0.9*/, 0, 1};
     public Direction dir = Direction.STRAIGHT;
 
     public void check() {
@@ -157,6 +157,7 @@ public abstract class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpM
     public void point(Direction direction) {
         if(direction == Direction.NINETY) {
             /*
+             * wheel positions:
              * _   _
              *
              * _   _
@@ -168,6 +169,7 @@ public abstract class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpM
             this.getRobot().getServo4().setPosition(ninety[3]);
         } else if(direction == Direction.FORTYFIVE) {
             /*
+             * wheel positions:
              * /   \
              *
              * \   /
@@ -179,6 +181,7 @@ public abstract class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpM
             this.getRobot().getServo4().setPosition(ff[3]);
         } else {
             /*
+             * wheel positions:
              * |   |
              *
              * |   |
@@ -193,26 +196,25 @@ public abstract class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpM
         dir = direction;
     }
 
-    public void drive(double x) {
-        /* dir: 0=straight, 1=ff, -1=90 */
+    public void drive(double power) {
         if (dir == Direction.FORTYFIVE) {
-            // ff
-            this.getRobot().getMotor1().setPower(x); // i
-            this.getRobot().getMotor2().setPower(x);
-            this.getRobot().getMotor3().setPower(-x);
-            this.getRobot().getMotor4().setPower(-x); // i
+            // forty five degrees (rotate)
+            this.getRobot().getMotor1().setPower(power);
+            this.getRobot().getMotor2().setPower(power);
+            this.getRobot().getMotor3().setPower(-power);
+            this.getRobot().getMotor4().setPower(-power);
         } else if (dir == Direction.NINETY) {
-            // ninety = invert some of these   l a t e r  ...
-            this.getRobot().getMotor1().setPower(x);
-            this.getRobot().getMotor2().setPower(-x); // inverted i
-            this.getRobot().getMotor3().setPower(x); // inverted i
-            this.getRobot().getMotor4().setPower(-x);
+            // ninety (horizontal)
+            this.getRobot().getMotor1().setPower(power);
+            this.getRobot().getMotor2().setPower(-power);
+            this.getRobot().getMotor3().setPower(power);
+            this.getRobot().getMotor4().setPower(-power);
         } else if (dir == Direction.STRAIGHT) {
-            // straight
-            this.getRobot().getMotor1().setPower(-x);
-            this.getRobot().getMotor2().setPower(-x); // inverted
-            this.getRobot().getMotor3().setPower(-x); // inverted
-            this.getRobot().getMotor4().setPower(-x);
+            // straight (vertical)
+            this.getRobot().getMotor1().setPower(-power);
+            this.getRobot().getMotor2().setPower(-power);
+            this.getRobot().getMotor3().setPower(-power);
+            this.getRobot().getMotor4().setPower(-power);
         }
     }
 

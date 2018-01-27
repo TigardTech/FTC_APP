@@ -258,7 +258,7 @@ public class EncodersTest extends TeleOpMode {
         }
 
         // move motor arm around
-        /*if (this.getGamepad().left_trigger > Constants.TRIGGER_THRESHOLD) {
+        /*   / (this.getGamepad().left_trigger > Constants.TRIGGER_THRESHOLD) {
             this.getRobot().getMotorArm().setPower(-this.getGamepad().left_trigger / 2);
         } else if (this.getGamepad().right_trigger > Constants.TRIGGER_THRESHOLD) {
             this.getRobot().getMotorArm().setPower(this.getGamepad().right_trigger / 2);

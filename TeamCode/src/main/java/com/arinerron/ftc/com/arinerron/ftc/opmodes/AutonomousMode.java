@@ -117,26 +117,26 @@ public class AutonomousMode extends OpMode {
 
     }
 
-    public void drive(double x) {
+    public void drive(double power) {
         /* dir: 0=straight, 1=ff, -1=90 */
         if (dir == 1) {
             // ff
-            this.getRobot().getMotor1().setPower(x);
-            this.getRobot().getMotor2().setPower(-x);
-            this.getRobot().getMotor3().setPower(x);
-            this.getRobot().getMotor4().setPower(-x);
+            this.getRobot().getMotor1().setPower(power);
+            this.getRobot().getMotor2().setPower(-power);
+            this.getRobot().getMotor3().setPower(power);
+            this.getRobot().getMotor4().setPower(-power);
         } else if (dir == -1) {
             // ninety = invert some of these   l a t e r  ...
-            this.getRobot().getMotor1().setPower(-x);
-            this.getRobot().getMotor2().setPower(-x); // inverted
-            this.getRobot().getMotor3().setPower(x); // inverted
-            this.getRobot().getMotor4().setPower(x);
+            this.getRobot().getMotor1().setPower(-power);
+            this.getRobot().getMotor2().setPower(-power); // inverted
+            this.getRobot().getMotor3().setPower(power); // inverted
+            this.getRobot().getMotor4().setPower(power);
         } else if (dir == 0) {
             // straight
-            this.getRobot().getMotor1().setPower(-x);
-            this.getRobot().getMotor2().setPower(x); // inverted
-            this.getRobot().getMotor3().setPower(x); // inverted
-            this.getRobot().getMotor4().setPower(-x);
+            this.getRobot().getMotor1().setPower(-power);
+            this.getRobot().getMotor2().setPower(power); // inverted
+            this.getRobot().getMotor3().setPower(power); // inverted
+            this.getRobot().getMotor4().setPower(-power);
         }
     }
 

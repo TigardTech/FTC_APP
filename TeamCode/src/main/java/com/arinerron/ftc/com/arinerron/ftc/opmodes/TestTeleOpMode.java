@@ -41,11 +41,11 @@ private boolean pressedl = false, holdingl = false;
     public void repeat() {
         double x = this.getGamepad().right_stick_x;
         double y = -this.getGamepad().right_stick_y;
-
+double l = servoi % 7;
         if(servo != null)
-            this.write("debug", "pos: " + round(servo.getPosition(), 2) + " & servo: " + (servoi % 3 == 0 ? "arm" : "arm" + (servoi % 3)));
+            this.write("debug", "pos: " + round(servo.getPosition(), 2) + " & servo: " + (l == 0 ? "arm" : (l == 3 ? "armj" :  (l == 4 ? "armrelic" : (l == 5 ? "armrelicg" : (l == 6 ? "servo2" : "arm" + (l)))))));
 
-        if(Double.isNaN(this.getRobot().getServo1().getPosition()))
+        if(Double.isNaN(this.getRobot().getServo2().getPosition()))
             point(Direction.STRAIGHT);
         if(Double.isNaN(this.getRobot().getServoArm1().getPosition()))
             this.getRobot().getServoArm1().setPosition(0.5);
@@ -53,13 +53,23 @@ private boolean pressedl = false, holdingl = false;
             this.getRobot().getServoArm2().setPosition(0.5);
         if(Double.isNaN(this.getRobot().getServoArmE().getPosition()))
             this.getRobot().getServoArmE().setPosition(0.5);
+        if(Double.isNaN(this.getRobot().getServoArmJ().getPosition()))
+            this.getRobot().getServoArmJ().setPosition(0.5);
+        if(Double.isNaN(this.getRobot().getServoRelic().getPosition()))
+            this.getRobot().getServoRelic().setPosition(0.5);
+        if(Double.isNaN(this.getRobot().getServoRelicGrabber().getPosition()))
+            this.getRobot().getServoRelicGrabber().setPosition(0.5);
 
-        if(this.getGamepad().right_bumper) {
+        if(this.getGamepad().right_bumper || this.getGamepad().left_bumper) {
             if(!pressed) {
                 pressed = true;
 
-                servoi++;
-                switch (servoi % 3) {
+                if(this.getGamepad().right_bumper)
+                    servoi++;
+                else
+                    servoi--;
+
+                switch (servoi % 7) {
                     case 0:
                         servo = this.getRobot().getServoArmE();
                         break;
@@ -68,6 +78,18 @@ private boolean pressedl = false, holdingl = false;
                         break;
                     case 2:
                         servo = this.getRobot().getServoArm2();
+                        break;
+                    case 3:
+                        servo = this.getRobot().getServoArmJ();
+                        break;
+                    case 4:
+                        servo = this.getRobot().getServoRelic();
+                        break;
+                    case 5:
+                        servo = this.getRobot().getServoRelicGrabber();
+                        break;
+                    case 6:
+                        servo = this.getRobot().getServo2();
                         break;
                 }
 

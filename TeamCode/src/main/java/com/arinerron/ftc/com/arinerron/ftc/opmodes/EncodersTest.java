@@ -52,7 +52,7 @@ public class EncodersTest extends TeleOpMode {
     private boolean run = false, open = true, pressedclaw = false, first = true;
 
     private Servo curser = null;
-    private boolean cpressed = 0;
+    private boolean cpressed = false;
     private int index = 0;
 
     @Override
@@ -68,7 +68,7 @@ public class EncodersTest extends TeleOpMode {
         }
 
         if(curser == null)
-            curser = this.getRobot().getServoRelicGrabber
+            curser = this.getRobot().getServoRelicGrabber();
 
         // debug stuff
         this.write("\nMode: " + (mode ? "advanced" : "simple") + "\n" +

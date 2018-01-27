@@ -51,6 +51,10 @@ public class EncodersTest extends TeleOpMode {
     private String color = "";
     private boolean run = false, open = true, pressedclaw = false, first = true;
 
+    private Servo curser = null;
+    private boolean cpressed = 0;
+    private int index = 0;
+
     @Override
     public void repeat() {
         double x = this.getGamepad().right_stick_x;
@@ -62,6 +66,9 @@ public class EncodersTest extends TeleOpMode {
             first = false;
             point(Direction.STRAIGHT);
         }
+
+        if(curser == null)
+            curser = this.getRobot().getServoRelicGrabber
 
         // debug stuff
         this.write("\nMode: " + (mode ? "advanced" : "simple") + "\n" +
@@ -92,6 +99,34 @@ public class EncodersTest extends TeleOpMode {
             this.getRobot().getServoArmJ().setPosition(0.0);
         } else {
             this.getRobot().getServoArmJ().setPosition(0.5);
+        }
+
+        if(Double.isNaN(curser.getPosition()))
+            curser.setPosition(0.5);
+
+        if(this.getGamepadB().dpad_up) {
+            if(!cpressed)
+                curser.setPosition(curser.getPosition() + 0.1);
+            cpressed = true;
+        } else if(this.getGamepadB().dpad_down) {
+            if(!cpressed)
+                curser.setPosition(curser.getPosition() - 0.1);
+            cpressed = true;
+        } else if(this.getGamepadB().x) {
+            if(!cpressed) {
+                index++;
+                switch(index) {
+                    case 0:
+                        curser = this.getRobot().getServoRelic();
+                        break;
+                    case 1:
+                        curser = this.getRobot().getServoRelicGrabber();
+                        break;
+                }
+            }
+            cpressed = true;
+        } else {
+            cpressed = false;
         }
 
         // get colors
@@ -275,14 +310,21 @@ public class EncodersTest extends TeleOpMode {
          * this.getGamepad().right_trigger : The amount that the right trigger is pressed, from 0 to 1
          * this.getRobot().getMotorArmLift().setPower(power) : Sets the amount of power on the lifting motor
          */
-        if(this.getGamepad().right_trigger > Constants.TRIGGER_THRESHOLD) {
-            // lift the grabber up
-            this.getRobot().getMotorArmLift().setPower(-this.getGamepad().right_trigger);
-        } else if(this.getGamepad().left_trigger > Constants.TRIGGER_THRESHOLD) {
-            // let the grabber down
-            // divide by two to slow down-- gravity helps already, no need to speed things up that much
-            this.getRobot().getMotorArmLift().setPower(this.getGamepad().left_trigger / 2);
-        } else {
+         if(this.getGamepad().right_trigger > Constants.TRIGGER_THRESHOLD) {
+             // lift the grabber up
+             this.getRobot().getMotorArmLift().setPower(-this.getGamepad().right_trigger);
+         } else if(this.getGamepad().left_trigger > Constants.TRIGGER_THRESHOLD) {
+             // let the grabber down
+             // divide by two to slow down-- gravity helps already, no need to speed things up that much
+             this.getRobot().getMotorArmLift().setPower(this.getGamepad().left_trigger / 2);
+         } else if(this.getGamepadB().right_bumper) {
+             // lift the grabber up
+             this.getRobot().getMotorArmLift().setPower(-1);
+         } else if(this.getGamepadB().left_bumper) {
+             // let the grabber down
+             // divide by two to slow down-- gravity helps already, no need to speed things up that much
+             this.getRobot().getMotorArmLift().setPower(1 / 2);
+         } else {
             // stop the arm lift
             this.getRobot().getMotorArmLift().setPower(0);
         }
